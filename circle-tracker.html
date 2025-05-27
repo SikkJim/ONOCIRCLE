@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Circle Tracker</title>
+  <link rel="stylesheet" href="styling.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Notification bell container */
+    .notification-bell {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: #374151; /* Tailwind gray-700 */
+      z-index: 1000;
+    }
+
+    /* Red badge for notification count */
+    .notification-bell .badge {
+      position: absolute;
+      top: -0.25rem;
+      right: -0.25rem;
+      background-color: #ef4444; /* Tailwind red-500 */
+      color: white;
+      border-radius: 9999px;
+      width: 1rem;
+      height: 1rem;
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      user-select: none;
+    }
+     /* Profile menu container */
+     #profileMenuContainer {
+      position: fixed;
+      top: 1rem;
+      right: 3.5rem; /* Left of notification bell */
+      z-index: 1000;
+      user-select: none;
+    }
+
+    /* Profile dropdown */
+    #profileDropdown {
+      display: none;
+      position: absolute;
+      right: 0;
+      margin-top: 0.5rem;
+      width: 10rem; /* 40 * 0.25rem */
+      background-color: white;
+      border-radius: 0.375rem; /* rounded-md */
+      box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+                  0 4px 6px -4px rgb(0 0 0 / 0.1);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    #profileDropdown a {
+      display: block;
+      padding: 0.5rem 1rem;
+      color: #374151; /* gray-700 */
+      text-decoration: none;
+    }
+
+    #profileDropdown a:hover {
+      background-color: #f3f4f6; /* gray-100 */
+    }
+
+    /* Profile button */
+    #profileButton {
+      font-size: 1.5rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #374151; /* gray-700 */
+      padding: 0;
+    }
+    /* NEW: Inbox Icon Container */
+    #inboxIconContainer {
+            position: fixed;
+            top: 1rem;
+            /* Right of profile button (3.5rem) + profile button width (~1.5rem) + desired gap (e.g., 1rem) */
+            right: 6.5rem; /* Adjust this value to position it correctly */
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #374151; /* Tailwind gray-700 */
+            z-index: 1000;
+            user-select: none;
+        }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex">
+  <div class="sidebar">
+    <ul>
+      <li><a href="dashboard.html">🏁 <span>Dashboard</span></a></li>
+      <li><a href="users.html">👤 <span>Users</span></a></li>
+      <li><a href="circles.html">⚪ <span>Circles</span></a></li>
+      <li class="active"><a href="#">📊 <span>Circle Tracker</span></a></li>
+      <li><a href="payments.html">💵 <span>Payments</span></a></li>
+    </ul>
+  </div>
+
+  <main class="flex-1 p-8">
+    <h1 class="text-2xl font-semibold text-gray-800 mb-2">Circle Tracker</h1>
+    <p class="text-gray-500 mb-6">Get circles analytics.</p>
+
+    <div class="flex justify-end mb-4">
+      <label for="circle" class="mr-2 text-sm text-gray-700">Circle</label>
+      <select id="circle" class="border border-gray-300 rounded px-2 py-1 text-sm">
+        <option value="18">18</option>
+      </select>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-6">
+      <div class="bg-white p-4 rounded shadow text-center">
+        <div class="text-gray-500 text-sm">Start</div>
+        <div class="font-semibold">Apr-2025</div>
+      </div>
+      <div class="bg-white p-4 rounded shadow text-center">
+        <div class="text-gray-500 text-sm">End</div>
+        <div class="font-semibold">Jan-2026</div>
+      </div>
+      <div class="bg-white p-4 rounded shadow text-center">
+        <div class="text-gray-500 text-sm">Status</div>
+        <div class="text-green-700 bg-green-100 px-2 py-1 rounded-full text-xs font-medium inline-block mt-1">active</div>
+      </div>
+      <div class="bg-white p-4 rounded shadow text-center">
+        <div class="text-gray-500 text-sm">Participants</div>
+        <div class="font-semibold">0</div>
+      </div>
+      <div class="bg-white p-4 rounded shadow text-center">
+        <div class="text-gray-500 text-sm">Period</div>
+        <div class="font-semibold">10</div>
+      </div>
+      <div class="bg-white p-4 rounded shadow text-center">
+        <div class="text-gray-500 text-sm">Investment</div>
+        <div class="font-semibold">£100</div>
+      </div>
+      <div class="bg-white p-4 rounded shadow text-center">
+        <div class="text-gray-500 text-sm">Fee</div>
+        <div class="font-semibold">£5</div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow overflow-x-auto">
+      <table class="min-w-full text-sm text-left text-gray-700">
+        <thead class="bg-gray-50 text-xs uppercase tracking-wider text-gray-500 border-b">
+          <tr>
+            <th class="px-4 py-3">Spot</th>
+            <th class="px-4 py-3">Payout</th>
+            <th class="px-4 py-3">Drawn</th>
+            <th class="px-4 py-3">Dropout</th>
+            <th class="px-4 py-3">Name</th>
+            <th class="px-4 py-3">Apr25</th>
+            <th class="px-4 py-3">May25</th>
+            <th class="px-4 py-3">Jun25</th>
+            <th class="px-4 py-3">Jul25</th>
+            <th class="px-4 py-3">Aug25</th>
+            <th class="px-4 py-3">Sep25</th>
+            <th class="px-4 py-3">Oct25</th>
+            <th class="px-4 py-3">Nov25</th>
+            <th class="px-4 py-3">Dec25</th>
+            <th class="px-4 py-3">Jan26</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b hover:bg-gray-50">
+            <td colspan="15" class="text-center text-gray-400 py-3">No Rows To Show</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+  <!-- Notification Bell -->
+  <div class="notification-bell" title="Notifications">
+    🔔
+    <div class="badge">3</div>
+  </div>
+  <div id="inboxIconContainer" title="Messages">
+    ✉️
+</div>
+  <div id="profileMenuContainer">
+    <button id="profileButton" title="Profile">👤</button>
+    <div id="profileDropdown">
+      <a href="account.html">My Account</a>
+      <a href="login.html">Log Out</a>
+    </div>
+  </div>
+  <script>
+    const circleData = {
+      "18": [
+        {
+          spot: 1,
+          payout: "£1000",
+          drawn: "No",
+          dropout: "No",
+          name: "Alice",
+          payments: {
+            Apr25: "✓",
+            May25: "✓",
+            Jun25: "",
+            Jul25: "",
+            Aug25: "",
+            Sep25: "",
+            Oct25: "",
+            Nov25: "",
+            Dec25: "",
+            Jan26: ""
+          }
+        },
+        {
+          spot: 2,
+          payout: "£1000",
+          drawn: "Yes",
+          dropout: "No",
+          name: "Bob",
+          payments: {
+            Apr25: "✓",
+            May25: "✓",
+            Jun25: "✓",
+            Jul25: "",
+            Aug25: "",
+            Sep25: "",
+            Oct25: "",
+            Nov25: "",
+            Dec25: "",
+            Jan26: ""
+          }
+        }
+      ]
+    };
+  
+    const tableBody = document.querySelector("table tbody");
+    const circleSelect = document.getElementById("circle");
+  
+    function renderTable(circleId) {
+      const rows = circleData[circleId] || [];
+      tableBody.innerHTML = rows.length
+        ? rows.map(row => `
+            <tr class="border-b hover:bg-gray-50">
+              <td class="px-4 py-2">${row.spot}</td>
+              <td class="px-4 py-2">${row.payout}</td>
+              <td class="px-4 py-2">${row.drawn}</td>
+              <td class="px-4 py-2">${row.dropout}</td>
+              <td class="px-4 py-2">${row.name}</td>
+              ${Object.values(row.payments).map(p => `<td class="px-4 py-2 text-center">${p}</td>`).join("")}
+            </tr>
+          `).join("")
+        : `<tr><td colspan="15" class="text-center text-gray-400 py-3">No Rows To Show</td></tr>`;
+    }
+  
+    // Initial render
+    renderTable(circleSelect.value);
+  
+    // Handle dropdown change
+    circleSelect.addEventListener("change", e => {
+      renderTable(e.target.value);
+    });
+     // Notification Bell functionality
+     const notificationBell = document.getElementById('notificationBell');
+    const notificationCount = document.getElementById('notificationCount');
+
+    notificationBell.addEventListener('click', () => {
+      const count = notificationCount.textContent;
+      alert(`You have ${count} new notifications.`);
+      // Hide badge after click
+      notificationCount.style.display = 'none';
+    });
+
+    // Profile Dropdown toggle
+    const profileButton = document.getElementById('profileButton');
+    const profileDropdown = document.getElementById('profileDropdown');
+
+    profileButton.addEventListener('click', (e) => {
+      e.stopPropagation(); // Prevent closing immediately
+      if (profileDropdown.style.display === 'block') {
+        profileDropdown.style.display = 'none';
+      } else {
+        profileDropdown.style.display = 'block';
+      }
+    });
+
+    // Close dropdown if clicking outside
+    document.addEventListener('click', () => {
+      if (profileDropdown.style.display === 'block') {
+        profileDropdown.style.display = 'none';
+      }
+    });
+    // NEW: Inbox Icon functionality
+    document.getElementById('inboxIconContainer').addEventListener('click', () => {
+            window.location.href = 'messages.html'; // Redirect to your messages page
+        });
+  </script>
+  
+</body>
+</html>

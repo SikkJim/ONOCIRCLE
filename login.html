@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css">
+    <style>
+        .cascading-right {
+            margin-right: -50px;
+        }
+
+        @media (max-width: 991.98px) {
+            .cascading-right {
+                margin-right: 0;
+            }
+        }
+
+        .logo-container img {
+            max-width: 150px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <section class="text-center text-lg-start">
+        <div class="container py-4">
+            <div class="row g-0 align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <div class="card cascading-right bg-body-tertiary" style="backdrop-filter: blur(30px);">
+                        <div class="card-body p-5 shadow-5 text-center">
+
+                            <div class="logo-container">
+                                <img src="Images/logo.png" alt="Company Logo">
+                            </div>
+
+                            <h2 class="fw-bold mb-4">Login</h2>
+                            <form id="loginForm">
+                                <div class="form-outline mb-4">
+                                    <input type="email" id="loginEmail" class="form-control" required />
+                                    <label class="form-label" for="loginEmail">Email address</label>
+                                </div>
+
+                                <div class="form-outline mb-4">
+                                    <input type="password" id="loginPassword" class="form-control" required />
+                                    <label class="form-label" for="loginPassword">Password</label>
+                                </div>
+
+                                <div class="form-check d-flex justify-content-center mb-4">
+                                    <input class="form-check-input me-2" type="checkbox" value="" id="rememberMe" />
+                                    <label class="form-check-label" for="rememberMe">
+                                        Remember me
+                                    </label>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary btn-block mb-4">
+                                    Login
+                                </button>
+
+                                <div class="text-center">
+                                    <p>or login with:</p>
+                                    <button type="button" class="btn btn-link btn-floating mx-1">
+                                        <i class="fab fa-facebook-f"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-link btn-floating mx-1">
+                                        <i class="fab fa-google"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-link btn-floating mx-1">
+                                        <i class="fab fa-twitter"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-link btn-floating mx-1">
+                                        <i class="fab fa-github"></i>
+                                    </button>
+                                </div>
+
+                                <div class="text-center mt-3">
+                                    <a href="forgot-password.html">Forgot password?</a>
+                                </div>
+
+                                <div class="text-center mt-2">
+                                    <p>Don't have an account? <a href="register.html">Sign up</a></p>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <img src="https://mdbootstrap.com/img/new/ecommerce/vertical/004.jpg" class="w-100 rounded-4 shadow-4"
+                        alt="" />
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // In a real application, you would perform server-side validation here.
+            // For now, we'll simulate a successful login.
+
+            // Simulate successful login (replace with your actual login logic)
+            const success = true; // Replace with your actual login result.
+
+            if (success) {
+                window.location.href = 'dashboard.html'; // Redirect to dashboard.html
+            } else {
+                alert('Login failed. Please check your credentials.'); // Or display an error message in a better way.
+            }
+        });
+    </script>
+</body>
+
+</html>

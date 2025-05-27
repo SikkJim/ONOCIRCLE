@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circles</title>
+    <link rel="stylesheet" href="styling.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Notification bell container */
+        .notification-bell {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #374151; /* Tailwind gray-700 */
+            z-index: 1000;
+        }
+
+        /* Red badge for notification count */
+        .notification-bell .badge {
+            position: absolute;
+            top: -0.25rem;
+            right: -0.25rem;
+            background-color: #ef4444; /* Tailwind red-500 */
+            color: white;
+            border-radius: 9999px;
+            width: 1rem;
+            height: 1rem;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            user-select: none;
+        }
+
+        /* Profile menu container */
+        #profileMenuContainer {
+            position: fixed;
+            top: 1rem;
+            right: 3.5rem; /* Left of notification bell */
+            z-index: 1000;
+            user-select: none;
+        }
+
+        /* Profile dropdown */
+        #profileDropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            margin-top: 0.5rem;
+            width: 10rem; /* 40 * 0.25rem */
+            background-color: white;
+            border-radius: 0.375rem; /* rounded-md */
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+                        0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        #profileDropdown a {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: #374151; /* gray-700 */
+            text-decoration: none;
+        }
+
+        #profileDropdown a:hover {
+            background-color: #f3f4f6; /* gray-100 */
+        }
+
+        /* Profile button */
+        #profileButton {
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #374151; /* gray-700 */
+            padding: 0;
+        }
+
+        /* NEW: Inbox Icon Container */
+        #inboxIconContainer {
+            position: fixed;
+            top: 1rem;
+            /* Right of profile button (3.5rem) + profile button width (~1.5rem) + desired gap (e.g., 1rem) */
+            right: 6.5rem; /* Adjust this value to position it correctly */
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #374151; /* Tailwind gray-700 */
+            z-index: 1000;
+            user-select: none;
+        }
+
+        /* Add New Circle Pop-up Styles */
+        .popup-overlay {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+            justify-content: center;
+            align-items: center;
+            z-index: 2000; /* Above other content */
+        }
+
+        .add-circle-popup {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            width: 90%;
+            max-width: 700px; /* Adjust max-width as needed */
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .add-circle-popup .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .add-circle-popup .popup-header h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #374151;
+            margin: 0;
+        }
+
+        .add-circle-popup .popup-header .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: #6b7280;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+        }
+
+        .add-circle-popup .popup-header .close-btn:hover {
+            color: #ef4444;
+        }
+
+        .add-circle-popup .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .add-circle-popup .form-group {
+            flex: 1 1 calc(50% - 7.5px); /* Two columns, considering gap */
+            min-width: 200px; /* Ensures fields don't get too small */
+        }
+
+        .add-circle-popup .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: #4b5563; /* Tailwind gray-700 */
+            margin-bottom: 5px;
+        }
+
+        .add-circle-popup .form-group .input-wrapper {
+            position: relative;
+        }
+
+        .add-circle-popup .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db; /* Tailwind gray-300 */
+            border-radius: 5px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            color: #374151;
+            padding-left: 35px; /* Space for icon */
+        }
+
+        .add-circle-popup .form-group input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        .add-circle-popup .form-group .input-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af; /* Tailwind gray-400 */
+            pointer-events: none; /* So it doesn't interfere with input click */
+        }
+
+        .add-circle-popup .form-group input.date-input {
+            padding-right: 35px; /* Space for calendar icon */
+        }
+
+        .add-circle-popup .form-group .calendar-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            cursor: pointer;
+        }
+
+        .add-circle-popup .amount-display {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #4b5563;
+            margin-top: 20px;
+            text-align: right;
+            padding-right: 10px;
+        }
+
+        .add-circle-popup .popup-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .add-circle-popup .popup-buttons button {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .add-circle-popup .popup-buttons .submit-btn {
+            background-color: #3b82f6; /* Tailwind blue-500 */
+            color: white;
+        }
+
+        .add-circle-popup .popup-buttons .submit-btn:hover {
+            background-color: #2563eb; /* Tailwind blue-700 */
+        }
+
+        .add-circle-popup .popup-buttons .close-btn-bottom {
+            background-color: #e5e7eb; /* Tailwind gray-200 */
+            color: #374151; /* Tailwind gray-700 */
+        }
+
+        .add-circle-popup .popup-buttons .close-btn-bottom:hover {
+            background-color: #d1d5db; /* Tailwind gray-300 */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex">
+    <div class="sidebar">
+        <ul>
+            <li><a href="dashboard.html"><i class="icon">🏁</i><span>Dashboard</span></a></li>
+            <li><a href="users.html"><i class="icon">👤</i><span>Users</span></a></li>
+            <li class="active"><a href="circles.html"><i class="icon">⚪</i><span>Circles</span></a></li>
+            <li><a href="circle-tracker.html"><i class="icon">📊</i><span>Circle Tracker</span></a></li>
+            <li><a href="payments.html"><i class="icon">💵</i><span>Payments</span></a></li>
+        </ul>
+    </div>
+    
+    <main class="flex-1 p-8">
+        <h1 class="text-2xl font-semibold text-gray-800 mb-6">Circles</h1>
+
+        <div class="bg-white rounded-lg shadow p-4">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
+                <div class="flex items-center gap-3">
+                    <button id="addCircleButton" class="bg-blue-900 text-white px-4 py-2 rounded shadow hover:bg-blue-800">ADD CIRCLE</button>
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Search circles..."
+                        class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm"
+                    />
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow overflow-x-auto">
+                <table class="min-w-full text-sm text-left text-gray-700">
+                    <thead class="bg-gray-50 text-xs uppercase tracking-wider text-gray-500 border-b">
+                        <tr>
+                            <th class="px-4 py-3">Actions</th>
+                            <th class="px-4 py-3">Circle #</th>
+                            <th class="px-4 py-3">Status</th>
+                            <th class="px-4 py-3">Monthly</th>
+                            <th class="px-4 py-3">Period</th>
+                            <th class="px-4 py-3">Fee</th>
+                            <th class="px-4 py-3">Start Date</th>
+                            <th class="px-4 py-3">End Date</th>
+                            <th class="px-4 py-3">Participants</th>
+                        </tr>
+                    </thead>
+                    <tbody id="circlesTableBody">
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="px-4 py-3 flex space-x-2">
+                                <button class="edit-btn" title="Edit">✏️</button>
+                                <button class="copy-btn" title="Copy">📋</button>
+                            </td>
+                            <td class="px-4 py-3">18</td>
+                            <td class="px-4 py-3">
+                                <span class="text-green-700 bg-green-100 px-2 py-1 rounded-full text-xs font-medium">active</span>
+                            </td>
+                            <td class="px-4 py-3">£100</td>
+                            <td class="px-4 py-3">10</td>
+                            <td class="px-4 py-3">£5</td>
+                            <td class="px-4 py-3">Apr 2025</td>
+                            <td class="px-4 py-3">Jan 2026</td>
+                            <td class="px-4 py-3">—</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <div id="inboxIconContainer" title="Messages">
+        ✉️
+    </div>
+
+    <div class="notification-bell" title="Notifications">
+        🔔
+        <div class="badge">3</div>
+    </div>
+    <div id="profileMenuContainer">
+        <button id="profileButton" title="Profile">👤</button>
+        <div id="profileDropdown">
+            <a href="account.html">My Account</a>
+            <a href="login.html">Log Out</a>
+        </div>
+    </div>
+
+    <div class="popup-overlay" id="addCirclePopupContainer">
+        <div class="add-circle-popup">
+            <div class="popup-header">
+                <h3 id="circlePopupTitle">Add New Circle</h3>
+                <button class="close-btn" onclick="closeCirclePopup()">×</button>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group" style="flex: 1 1 100%;">
+                    <label for="circleName">Circle Name (optional)</label>
+                    <div class="input-wrapper">
+                        <i class="input-icon">●</i>
+                        <input type="text" id="circleName" name="circleName" placeholder="Circle Name">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="monthlyInvestment">Monthly Investment*</label>
+                    <div class="input-wrapper">
+                        <i class="input-icon">£</i>
+                        <input type="text" id="monthlyInvestment" name="monthlyInvestment" placeholder="100" value="100" onkeyup="calculateAmount()" onchange="calculateAmount()">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="participantsMonths">Participants/Months</label>
+                    <div class="input-wrapper">
+                        <i class="input-icon">👤</i>
+                        <input type="text" id="participantsMonths" name="participantsMonths" placeholder="10" value="10" onkeyup="calculateAmount()" onchange="calculateAmount()">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="fee">Fee*</label>
+                    <div class="input-wrapper">
+                        <i class="input-icon">£</i>
+                        <input type="text" id="fee" name="fee" placeholder="5">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="startingDate">Starting Date*</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="startingDate" name="startingDate" placeholder="Jun 2025" class="date-input">
+                        <i class="calendar-icon">📅</i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="endingDate">Ending Date</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="endingDate" name="endingDate" placeholder="Mar 2026" class="date-input">
+                        <i class="calendar-icon">📅</i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="reservePeriod">Reserve Period*</label>
+                    <div class="input-wrapper">
+                        <i class="input-icon">0</i>
+                        <input type="text" id="reservePeriod" name="reservePeriod" placeholder="0">
+                    </div>
+                </div>
+            </div>
+
+            <div class="amount-display">
+                Amount: <span id="calculatedAmount">£100 x 10 = £1000</span>
+            </div>
+
+            <div class="popup-buttons">
+                <button class="submit-btn" id="submitCircleButton">SUBMIT</button>
+                <button class="close-btn-bottom" onclick="closeCirclePopup()">CLOSE</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state for edit mode
+        let isEditingMode = false;
+        let currentRowBeingEdited = null;
+
+        // Get references to popup elements
+        const addCirclePopupContainer = document.getElementById('addCirclePopupContainer');
+        const circlePopupTitle = document.getElementById('circlePopupTitle');
+        const submitCircleButton = document.getElementById('submitCircleButton');
+
+        // Form inputs
+        const circleNameInput = document.getElementById('circleName');
+        const monthlyInvestmentInput = document.getElementById('monthlyInvestment');
+        const participantsMonthsInput = document.getElementById('participantsMonths');
+        const feeInput = document.getElementById('fee');
+        const startingDateInput = document.getElementById('startingDate');
+        const endingDateInput = document.getElementById('endingDate');
+        const reservePeriodInput = document.getElementById('reservePeriod');
+        const calculatedAmountSpan = document.getElementById('calculatedAmount');
+
+        // Table body for adding/editing rows
+        const circlesTableBody = document.getElementById("circlesTableBody");
+
+
+        // --- General Popup Control ---
+        function openCirclePopup() {
+            addCirclePopupContainer.style.display = 'flex';
+            calculateAmount();
+        }
+
+        function closeCirclePopup() {
+            addCirclePopupContainer.style.display = 'none';
+            // Reset form fields and popup state
+            circleNameInput.value = '';
+            monthlyInvestmentInput.value = '100';
+            participantsMonthsInput.value = '10';
+            feeInput.value = '';
+            startingDateInput.value = '';
+            endingDateInput.value = '';
+            reservePeriodInput.value = '';
+            calculateAmount(); // Recalculate to show default values
+            
+            isEditingMode = false;
+            currentRowBeingEdited = null;
+            circlePopupTitle.textContent = 'Add New Circle';
+            submitCircleButton.textContent = 'SUBMIT';
+        }
+
+        // --- Add New Circle specific logic ---
+        document.getElementById('addCircleButton').addEventListener('click', () => {
+            isEditingMode = false;
+            circlePopupTitle.textContent = 'Add New Circle';
+            submitCircleButton.textContent = 'SUBMIT';
+            openCirclePopup();
+        });
+
+        function createNewCircleRow(monthlyInvestment, participantsMonths, fee, startingDate, endingDate, reservePeriod) {
+            const currentRows = circlesTableBody.getElementsByTagName('tr').length;
+            const newCircleId = currentRows + 1;
+
+            const newRow = document.createElement('tr');
+            newRow.classList.add('border-b', 'hover:bg-gray-50');
+
+            newRow.innerHTML = `
+                <td class="px-4 py-3 flex space-x-2">
+                    <button class="edit-btn" title="Edit">✏️</button>
+                    <button class="copy-btn" title="Copy">📋</button>
+                </td>
+                <td class="px-4 py-3">${newCircleId}</td>
+                <td class="px-4 py-3">
+                    <span class="text-green-700 bg-green-100 px-2 py-1 rounded-full text-xs font-medium">active</span>
+                </td>
+                <td class="px-4 py-3">£${monthlyInvestment}</td>
+                <td class="px-4 py-3">${participantsMonths}</td>
+                <td class="px-4 py-3">£${fee}</td>
+                <td class="px-4 py-3">${startingDate}</td>
+                <td class="px-4 py-3">${endingDate || 'N/A'}</td>
+                <td class="px-4 py-3">—</td>
+            `;
+            circlesTableBody.appendChild(newRow);
+            alert('New Circle Added!');
+        }
+
+
+        // --- Edit Circle specific logic ---
+        function openEditCirclePopup(row) {
+            isEditingMode = true;
+            currentRowBeingEdited = row;
+            circlePopupTitle.textContent = 'Edit Circle';
+            submitCircleButton.textContent = 'SAVE CHANGES';
+
+            const cells = row.querySelectorAll('td');
+            // Populate form fields with current row data
+            // Note: circleName is not stored in the table, so it won't be pre-filled
+            monthlyInvestmentInput.value = cells[3].textContent.replace('£', '');
+            participantsMonthsInput.value = cells[4].textContent;
+            feeInput.value = cells[5].textContent.replace('£', '');
+            startingDateInput.value = cells[6].textContent;
+            endingDateInput.value = cells[7].textContent === 'N/A' ? '' : cells[7].textContent;
+            // reservePeriodInput.value = cells[?] // You'd need to add a column for this if you want to edit it from the table
+
+            openCirclePopup(); // Open the popup with pre-filled data
+        }
+
+        function updateExistingCircle() {
+            if (!currentRowBeingEdited) return;
+
+            const monthlyInvestment = monthlyInvestmentInput.value.trim();
+            const participantsMonths = participantsMonthsInput.value.trim();
+            const fee = feeInput.value.trim();
+            const startingDate = startingDateInput.value.trim();
+            const endingDate = endingDateInput.value.trim();
+            // const reservePeriod = reservePeriodInput.value.trim(); // Get if you add to table
+
+            // Basic validation
+            if (!monthlyInvestment || !participantsMonths || !fee || !startingDate) { // Removed reservePeriod from validation as it's not in table display for now
+                alert('Please fill in all required fields (marked with *).');
+                return;
+            }
+
+            const cells = currentRowBeingEdited.querySelectorAll('td');
+            // Update the cells in the current row
+            // cells[0] is actions, cells[1] is circle #, cells[2] is status (not editable via popup)
+            cells[3].textContent = `£${monthlyInvestment}`;
+            cells[4].textContent = participantsMonths;
+            cells[5].textContent = `£${fee}`;
+            cells[6].textContent = startingDate;
+            cells[7].textContent = endingDate || 'N/A';
+            // cells[?].textContent = reservePeriod; // Update if reserve period is displayed in table
+
+            alert('Circle updated successfully!');
+        }
+
+        // --- Handle Submission (Add or Edit) ---
+        submitCircleButton.addEventListener('click', () => {
+            if (isEditingMode) {
+                updateExistingCircle();
+            } else {
+                const monthlyInvestment = monthlyInvestmentInput.value.trim();
+                const participantsMonths = participantsMonthsInput.value.trim();
+                const fee = feeInput.value.trim();
+                const startingDate = startingDateInput.value.trim();
+                const endingDate = endingDateInput.value.trim();
+                const reservePeriod = reservePeriodInput.value.trim(); // Still needed for new circle
+                createNewCircleRow(monthlyInvestment, participantsMonths, fee, startingDate, endingDate, reservePeriod);
+            }
+            closeCirclePopup(); // Close after submission
+        });
+
+
+        // --- Calculation for Amount Display ---
+        function calculateAmount() {
+            const monthlyInvestment = parseFloat(monthlyInvestmentInput.value) || 0;
+            const participantsMonths = parseFloat(participantsMonthsInput.value) || 0;
+            const totalAmount = monthlyInvestment * participantsMonths;
+            calculatedAmountSpan.textContent = `£${monthlyInvestment} x ${participantsMonths} = £${totalAmount}`;
+        }
+
+
+        // --- Event Delegation for Edit and Copy Buttons ---
+        circlesTableBody.addEventListener('click', function(event) {
+            const target = event.target;
+
+            if (target.classList.contains('copy-btn')) {
+                const rowToCopy = target.closest('tr');
+                if (rowToCopy) {
+                    const cells = rowToCopy.querySelectorAll('td');
+                    // Extract data from the cells (skip first 'Actions' column)
+                    const monthly = cells[3].textContent.replace('£', '');
+                    const period = cells[4].textContent;
+                    const fee = cells[5].textContent.replace('£', '');
+                    const startDate = cells[6].textContent;
+                    const endDate = cells[7].textContent;
+                    const reserve = '0'; // Default for copied if not in table
+                    
+                    createNewCircleRow(monthly, period, fee, startDate, endDate, reserve); // Reuse the function to create a new row
+                    alert('Circle duplicated!');
+                }
+            } else if (target.classList.contains('edit-btn')) {
+                const rowToEdit = target.closest('tr');
+                if (rowToEdit) {
+                    openEditCirclePopup(rowToEdit);
+                }
+            }
+        });
+
+        // --- Other existing functionalities ---
+
+        // Toggle profile dropdown
+        const profileButton = document.getElementById('profileButton');
+        const profileDropdown = document.getElementById('profileDropdown');
+
+        profileButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const expanded = profileButton.getAttribute('aria-expanded') === 'true';
+            profileButton.setAttribute('aria-expanded', !expanded);
+            if (profileDropdown.style.display === 'block') {
+                profileDropdown.style.display = 'none';
+            } else {
+                profileDropdown.style.display = 'block';
+            }
+        });
+
+        // Close dropdown if clicking outside
+        document.addEventListener('click', (event) => {
+            if (!profileButton.contains(event.target) && !profileDropdown.contains(event.target)) {
+                profileDropdown.style.display = 'none';
+                profileButton.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        // Notification bell click example (could open notifications panel)
+        document.querySelector('.notification-bell').addEventListener('click', () => {
+            alert('You have new notifications!');
+        });
+
+        // NEW: Inbox Icon functionality
+        document.getElementById('inboxIconContainer').addEventListener('click', () => {
+            window.location.href = 'messages.html'; // Redirect to your messages page
+        });
+
+
+        // Search functionality
+        const searchInput = document.getElementById("searchInput");
+        const tableRows = circlesTableBody.getElementsByTagName("tr");
+
+        searchInput.addEventListener("keyup", function () {
+            const query = this.value.toLowerCase();
+            for (let i = 0; i < tableRows.length; i++) {
+                const rowText = tableRows[i].innerText.toLowerCase();
+                tableRows[i].style.display = rowText.includes(query) ? "" : "none";
+            }
+        });
+
+    </script>
+</body>
+</html>

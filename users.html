@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Users</title>
+    <link rel="stylesheet" href="styling.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Notification bell container */
+        .notification-bell {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #374151; /* Tailwind gray-700 */
+            z-index: 1000;
+        }
+
+        /* Red badge for notification count */
+        .notification-bell .badge {
+            position: absolute;
+            top: -0.25rem;
+            right: -0.25rem;
+            background-color: #ef4444; /* Tailwind red-500 */
+            color: white;
+            border-radius: 9999px;
+            width: 1rem;
+            height: 1rem;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            user-select: none;
+        }
+
+        /* Profile menu container */
+        #profileMenuContainer {
+            position: fixed;
+            top: 1rem;
+            right: 3.5rem; /* Left of notification bell */
+            z-index: 1000;
+            user-select: none;
+        }
+
+        /* Profile dropdown */
+        #profileDropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            margin-top: 0.5rem;
+            width: 10rem; /* 40 * 0.25rem */
+            background-color: white;
+            border-radius: 0.375rem; /* rounded-md */
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+                        0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        #profileDropdown a {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: #374151; /* gray-700 */
+            text-decoration: none;
+        }
+
+        #profileDropdown a:hover {
+            background-color: #f3f4f6; /* gray-100 */
+        }
+
+        /* Profile button */
+        #profileButton {
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #374151; /* gray-700 */
+            padding: 0;
+        }
+
+        /* Additional Users page styles */
+        .actions button {
+            margin-right: 0.5rem;
+            background-color: #3b82f6; /* Tailwind blue-500 */
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .actions button:hover {
+            background-color: #2563eb; /* Tailwind blue-700 */
+        }
+
+        .pagination {
+            margin-top: 1rem;
+        }
+
+        .pagination button {
+            margin-right: 0.5rem;
+            padding: 0.25rem 0.5rem;
+            border: 1px solid #cbd5e1; /* Tailwind gray-300 */
+            border-radius: 0.375rem;
+            background-color: white;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .pagination button:disabled {
+            background-color: #93c5fd; /* Tailwind blue-300 */
+            cursor: default;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background-color: #bfdbfe; /* Tailwind blue-200 */
+        }
+
+        /* Main content container for consistent padding and background */
+        main.content {
+            flex: 1;
+            padding: 2rem;
+            background-color: #f3f4f6; /* Tailwind gray-100 */
+            min-height: 100vh;
+        }
+
+        /* Header controls aligned like circles page */
+        .header-left {
+            display: flex;
+            flex-wrap: wrap; /* Allow wrapping for smaller screens */
+            gap: 0.75rem;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .header-left input[type="text"] {
+            border: 1px solid #d1d5db; /* Tailwind gray-300 */
+            border-radius: 0.375rem;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            outline: none;
+            transition: box-shadow 0.2s ease-in-out;
+        }
+
+        .header-left input[type="text"]:focus {
+            box-shadow: 0 0 0 2px #3b82f6; /* Tailwind blue-500 */
+            border-color: #3b82f6;
+        }
+
+        .header-left button {
+            background-color: #1e40af; /* Tailwind blue-900 */
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+            border: none;
+        }
+
+        .header-left button:hover {
+            background-color: #1e3a8a; /* Tailwind blue-800 */
+        }
+
+        /* NEW: Styles for the invite buttons */
+        .invite-button {
+            background-color: white; /* White background as per image */
+            color: #1e40af; /* Dark blue text as per image */
+            border: 1px solid #d1d5db; /* Light gray border */
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+            white-space: nowrap; /* Prevent text wrapping */
+        }
+
+        .invite-button:hover {
+            background-color: #f3f4f6; /* Light gray on hover */
+            border-color: #a0aec0; /* Slightly darker border on hover */
+        }
+
+
+        /* Table styling consistent with Circles page */
+        table#usersTable {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+            color: #374151; /* Tailwind gray-700 */
+            background-color: white;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+        }
+
+        table#usersTable thead {
+            background-color: #f9fafb; /* Tailwind gray-50 */
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            color: #6b7280; /* Tailwind gray-500 */
+            border-bottom: 1px solid #e5e7eb; /* Tailwind gray-200 */
+        }
+
+        table#usersTable th,
+        table#usersTable td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+        }
+
+        table#usersTable tbody tr:hover {
+            background-color: #f3f4f6; /* Tailwind gray-100 */
+        }
+
+        /* Layout flex for sidebar and main */
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f3f4f6;
+            margin: 0;
+        }
+
+        /* Sidebar from Circles page */
+        .sidebar {
+            background-color: white;
+            min-width: 12rem;
+            padding: 2rem 1rem;
+            box-shadow: 2px 0 6px rgb(0 0 0 / 0.1);
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 1.25rem;
+        }
+
+        .sidebar ul li a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #374151; /* Tailwind gray-700 */
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .sidebar ul li.active a {
+            font-weight: 700;
+            color: #1e40af; /* Tailwind blue-900 */
+        }
+
+        /* NEW: Inbox Icon Container */
+        #inboxIconContainer {
+            position: fixed;
+            top: 1rem;
+            right: 6.5rem; /* Positioned to the left of profile icon */
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #374151; /* Tailwind gray-700 */
+            z-index: 1000;
+            user-select: none;
+        }
+
+        /* Add/Edit User Pop-up Styles */
+        .popup-overlay {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+            justify-content: center;
+            align-items: center;
+            z-index: 2000; /* Above other content */
+        }
+
+        .user-popup {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            width: 90%;
+            max-width: 500px; /* Adjust max-width as needed */
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-popup .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .user-popup .popup-header h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #374151;
+            margin: 0;
+        }
+
+        .user-popup .popup-header .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: #6b7280;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+        }
+
+        .user-popup .popup-header .close-btn:hover {
+            color: #ef4444;
+        }
+
+        .user-popup .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .user-popup .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: #4b5563; /* Tailwind gray-700 */
+            margin-bottom: 5px;
+        }
+
+        .user-popup .form-group input,
+        .user-popup .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db; /* Tailwind gray-300 */
+            border-radius: 5px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            color: #374151;
+        }
+
+        .user-popup .form-group input:focus,
+        .user-popup .form-group select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        .user-popup .popup-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .user-popup .popup-buttons button {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .user-popup .popup-buttons .submit-btn {
+            background-color: #3b82f6; /* Tailwind blue-500 */
+            color: white;
+        }
+
+        .user-popup .popup-buttons .submit-btn:hover {
+            background-color: #2563eb; /* Tailwind blue-700 */
+        }
+
+        .user-popup .popup-buttons .cancel-btn {
+            background-color: #e5e7eb; /* Tailwind gray-200 */
+            color: #374151; /* Tailwind gray-700 */
+        }
+
+        .user-popup .popup-buttons .cancel-btn:hover {
+            background-color: #d1d5db; /* Tailwind gray-300 */
+        }
+
+        /* Confirmation Modal Styles */
+        .confirm-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 3000; /* Higher than user-popup */
+        }
+
+        .confirm-modal {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .confirm-modal h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 15px;
+        }
+
+        .confirm-modal p {
+            color: #4b5563;
+            margin-bottom: 25px;
+        }
+
+        .confirm-modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .confirm-modal-buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .confirm-modal-buttons .confirm-yes {
+            background-color: #ef4444; /* Red for delete */
+            color: white;
+        }
+
+        .confirm-modal-buttons .confirm-yes:hover {
+            background-color: #dc2626;
+        }
+
+        .confirm-modal-buttons .confirm-no {
+            background-color: #e5e7eb;
+            color: #374151;
+        }
+
+        .confirm-modal-buttons .confirm-no:hover {
+            background-color: #d1d5db;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <ul>
+            <li><a href="dashboard.html"><i class="icon">🏁</i><span>Dashboard</span></a></li>
+            <li class="active"><a href="users.html"><i class="icon">👤</i><span>Users</span></a></li>
+            <li><a href="circles.html"><i class="icon">⚪</i><span>Circles</span></a></li>
+            <li><a href="circle-tracker.html"><i class="icon">📊</i><span>Circle Tracker</span></a></li>
+            <li><a href="payments.html"><i class="icon">💵</i><span>Payments</span></a></li>
+        </ul>
+    </div>
+
+    <main class="content">
+        <h1 class="text-2xl font-semibold text-gray-800 mb-6">Users</h1>
+        <h2 class="text-lg font-medium text-gray-700 mb-4">Manage Users</h2>
+
+        <div class="header-left">
+            <input id="searchUser" type="text" placeholder="Search users..." />
+            <button id="addUserButton">Add User</button>
+            <button id="inviteCirclesButton" class="invite-button">INVITE USERS<br>IN CIRCLES</button>
+            <button id="inviteWithoutCirclesButton" class="invite-button">INVITE USERS<br>W/O CIRCLES</button>
+        </div>
+
+        <table id="usersTable" aria-label="Users table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="usersTableBody">
+                <tr>
+                    <td>001</td>
+                    <td>Alice Smith</td>
+                    <td>alice@example.com</td>
+                    <td>Admin</td>
+                    <td>Active</td>
+                    <td class="actions">
+                        <button class="edit-user-btn">Edit</button>
+                        <button class="delete-user-btn">Delete</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>002</td>
+                    <td>Bob Johnson</td>
+                    <td>bob@example.com</td>
+                    <td>User</td>
+                    <td>Inactive</td>
+                    <td class="actions">
+                        <button class="edit-user-btn">Edit</button>
+                        <button class="delete-user-btn">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="pagination">
+            <button disabled>&laquo; Prev</button>
+            <button>Next &raquo;</button>
+        </div>
+    </main>
+
+    <div id="inboxIconContainer" title="Messages">
+        ✉️
+    </div>
+
+    <div class="notification-bell" aria-label="Notifications" role="button" tabindex="0">
+        🔔
+        <span class="badge" aria-live="polite" aria-atomic="true">5</span>
+    </div>
+
+    <div id="profileMenuContainer">
+        <button id="profileButton" aria-haspopup="true" aria-expanded="false" aria-controls="profileDropdown">👤</button>
+        <div id="profileDropdown" role="menu" aria-label="Profile Options">
+            <a href="account.html" role="menuitem" tabindex="-1">Profile</a>
+            <a href="login.html" role="menuitem" tabindex="-1">Logout</a>
+        </div>
+    </div>
+
+    <div class="popup-overlay" id="userPopupContainer">
+        <div class="user-popup">
+            <div class="popup-header">
+                <h3 id="userPopupTitle">Add New User</h3>
+                <button class="close-btn" onclick="closeUserPopup()">×</button>
+            </div>
+            <form id="userForm">
+                <div class="form-group">
+                    <label for="userName">Name:</label>
+                    <input type="text" id="userName" required>
+                </div>
+                <div class="form-group">
+                    <label for="userEmail">Email:</label>
+                    <input type="email" id="userEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="userRole">Role:</label>
+                    <input type="text" id="userRole" required>
+                    <!-- Could be a select dropdown:
+                    <select id="userRole" required>
+                        <option value="User">User</option>
+                        <option value="Admin">Admin</option>
+                        <option value="Editor">Editor</option>
+                    </select>
+                    -->
+                </div>
+                <div class="form-group">
+                    <label for="userStatus">Status:</label>
+                    <input type="text" id="userStatus" required>
+                    <!-- Could be a select dropdown:
+                    <select id="userStatus" required>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                        <option value="Pending">Pending</option>
+                    </select>
+                    -->
+                </div>
+                <div class="popup-buttons">
+                    <button type="submit" class="submit-btn" id="submitUserButton">Add User</button>
+                    <button type="button" class="cancel-btn" onclick="closeUserPopup()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="confirm-modal-overlay" id="confirmDeleteModal">
+        <div class="confirm-modal">
+            <h3>Confirm Deletion</h3>
+            <p>Are you sure you want to delete this user?</p>
+            <div class="confirm-modal-buttons">
+                <button class="confirm-yes" id="confirmDeleteYes">Yes, Delete</button>
+                <button class="confirm-no" id="confirmDeleteNo">No, Cancel</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Global state for user pop-up
+        let isEditingUserMode = false;
+        let currentRowBeingEdited = null; // Stores the <tr> element being edited
+
+        // Get references to DOM elements
+        const usersTableBody = document.getElementById('usersTableBody');
+        const addUserButton = document.getElementById('addUserButton');
+        const searchUserInput = document.getElementById('searchUser');
+
+        // User Pop-up elements
+        const userPopupContainer = document.getElementById('userPopupContainer');
+        const userPopupTitle = document.getElementById('userPopupTitle');
+        const userForm = document.getElementById('userForm');
+        const submitUserButton = document.getElementById('submitUserButton');
+        const userNameInput = document.getElementById('userName');
+        const userEmailInput = document.getElementById('userEmail');
+        const userRoleInput = document.getElementById('userRole');
+        const userStatusInput = document.getElementById('userStatus');
+
+        // Confirmation Modal elements
+        const confirmDeleteModal = document.getElementById('confirmDeleteModal');
+        const confirmDeleteYesButton = document.getElementById('confirmDeleteYes');
+        const confirmDeleteNoButton = document.getElementById('confirmDeleteNo');
+        let rowToDelete = null; // Stores the <tr> element to be deleted
+
+
+        // --- User Pop-up Control Functions ---
+        function openUserPopup() {
+            userPopupContainer.style.display = 'flex';
+        }
+
+        function closeUserPopup() {
+            userPopupContainer.style.display = 'none';
+            // Reset form fields
+            userForm.reset();
+            // Reset pop-up state
+            isEditingUserMode = false;
+            currentRowBeingEdited = null;
+            userPopupTitle.textContent = 'Add New User';
+            submitUserButton.textContent = 'Add User';
+        }
+
+        // --- Add User Logic ---
+        addUserButton.addEventListener('click', () => {
+            isEditingUserMode = false;
+            userPopupTitle.textContent = 'Add New User';
+            submitUserButton.textContent = 'Add User';
+            closeUserPopup(); // Ensure form is reset before opening
+            openUserPopup();
+        });
+
+        function createNewUserRow(name, email, role, status) {
+            const currentRows = usersTableBody.getElementsByTagName('tr').length;
+            const newUserId = (currentRows + 1).toString().padStart(3, '0'); // e.g., 003, 004
+
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${newUserId}</td>
+                <td>${name}</td>
+                <td>${email}</td>
+                <td>${role}</td>
+                <td>${status}</td>
+                <td class="actions">
+                    <button class="edit-user-btn">Edit</button>
+                    <button class="delete-user-btn">Delete</button>
+                </td>
+            `;
+            usersTableBody.appendChild(newRow);
+            alert('New user added successfully!');
+        }
+
+        // --- Edit User Logic ---
+        function openEditUserPopup(row) {
+            isEditingUserMode = true;
+            currentRowBeingEdited = row;
+            userPopupTitle.textContent = 'Edit User';
+            submitUserButton.textContent = 'Save Changes';
+
+            const cells = row.querySelectorAll('td');
+            userNameInput.value = cells[1].textContent;
+            userEmailInput.value = cells[2].textContent;
+            userRoleInput.value = cells[3].textContent;
+            userStatusInput.value = cells[4].textContent;
+
+            openUserPopup();
+        }
+
+        function updateExistingUserRow(name, email, role, status) {
+            if (!currentRowBeingEdited) return; // Should not happen
+
+            const cells = currentRowBeingEdited.querySelectorAll('td');
+            cells[1].textContent = name;
+            cells[2].textContent = email;
+            cells[3].textContent = role;
+            cells[4].textContent = status;
+            alert('User updated successfully!');
+        }
+
+        // --- Handle User Form Submission (Add or Edit) ---
+        userForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const name = userNameInput.value.trim();
+            const email = userEmailInput.value.trim();
+            const role = userRoleInput.value.trim();
+            const status = userStatusInput.value.trim();
+
+            if (!name || !email || !role || !status) {
+                alert('Please fill in all fields.');
+                return;
+            }
+
+            if (isEditingUserMode) {
+                updateExistingUserRow(name, email, role, status);
+            } else {
+                createNewUserRow(name, email, role, status);
+            }
+            closeUserPopup();
+        });
+
+        // --- Delete User Logic (with Confirmation Modal) ---
+        function showConfirmDeleteModal(row) {
+            rowToDelete = row;
+            confirmDeleteModal.style.display = 'flex';
+        }
+
+        function hideConfirmDeleteModal() {
+            confirmDeleteModal.style.display = 'none';
+            rowToDelete = null;
+        }
+
+        confirmDeleteYesButton.addEventListener('click', () => {
+            if (rowToDelete) {
+                rowToDelete.remove();
+                alert('User deleted successfully!');
+            }
+            hideConfirmDeleteModal();
+        });
+
+        confirmDeleteNoButton.addEventListener('click', () => {
+            hideConfirmDeleteModal();
+        });
+
+
+        // --- Event Delegation for Edit and Delete Buttons in Table ---
+        usersTableBody.addEventListener('click', function(event) {
+            const target = event.target;
+
+            if (target.classList.contains('edit-user-btn')) {
+                const rowToEdit = target.closest('tr');
+                if (rowToEdit) {
+                    openEditUserPopup(rowToEdit);
+                }
+            } else if (target.classList.contains('delete-user-btn')) {
+                const row = target.closest('tr');
+                if (row) {
+                    showConfirmDeleteModal(row);
+                }
+            }
+        });
+
+        // --- Search Functionality ---
+        searchUserInput.addEventListener('keyup', function() {
+            const query = this.value.toLowerCase();
+            const rows = usersTableBody.getElementsByTagName('tr');
+
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const rowText = row.textContent.toLowerCase();
+                if (rowText.includes(query)) {
+                    row.style.display = ''; // Show row
+                } else {
+                    row.style.display = 'none'; // Hide row
+                }
+            }
+        });
+
+
+        // --- Other existing functionalities (Profile Dropdown, Notification Bell, Inbox Icon) ---
+
+        // Toggle profile dropdown
+        const profileButton = document.getElementById('profileButton');
+        const profileDropdown = document.getElementById('profileDropdown');
+
+        profileButton.addEventListener('click', () => {
+            const expanded = profileButton.getAttribute('aria-expanded') === 'true';
+            profileButton.setAttribute('aria-expanded', !expanded);
+            profileDropdown.style.display = expanded ? 'none' : 'block';
+        });
+
+        // Close dropdown if clicked outside
+        document.addEventListener('click', (event) => {
+            if (!profileButton.contains(event.target) && !profileDropdown.contains(event.target)) {
+                profileDropdown.style.display = 'none';
+                profileButton.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        // Notification bell click example (could open notifications panel)
+        document.querySelector('.notification-bell').addEventListener('click', () => {
+            alert('You have new notifications!');
+        });
+
+        // Inbox Icon functionality
+        document.getElementById('inboxIconContainer').addEventListener('click', () => {
+            window.location.href = 'messages.html'; // Redirect to your messages page
+        });
+
+        // NEW: Invite Buttons Functionality
+        const inviteCirclesButton = document.getElementById('inviteCirclesButton');
+        const inviteWithoutCirclesButton = document.getElementById('inviteWithoutCirclesButton');
+
+        inviteCirclesButton.addEventListener('click', () => {
+            alert('Initiating invitation process for users IN circles.');
+            // In a real application, this would trigger a backend process
+            // to send invitations to users who are part of circles.
+        });
+
+        inviteWithoutCirclesButton.addEventListener('click', () => {
+            alert('Initiating invitation process for users WITHOUT circles.');
+            // In a real application, this would trigger a backend process
+            // to send invitations to users who are not yet part of any circles.
+        });
+    </script>
+</body>
+</html>

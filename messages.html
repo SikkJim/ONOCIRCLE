@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages</title>
+    <link rel="stylesheet" href="styling.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Notification bell container */
+        .notification-bell {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #374151; /* Tailwind gray-700 */
+            z-index: 1000;
+        }
+
+        /* Red badge for notification count */
+        .notification-bell .badge {
+            position: absolute;
+            top: -0.25rem;
+            right: -0.25rem;
+            background-color: #ef4444; /* Tailwind red-500 */
+            color: white;
+            border-radius: 9999px;
+            width: 1rem;
+            height: 1rem;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            user-select: none;
+        }
+
+        /* Profile menu container */
+        #profileMenuContainer {
+            position: fixed;
+            top: 1rem;
+            right: 3.5rem; /* Left of notification bell */
+            z-index: 1000;
+            user-select: none;
+        }
+
+        /* Profile dropdown */
+        #profileDropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            margin-top: 0.5rem;
+            width: 10rem; /* 40 * 0.25rem */
+            background-color: white;
+            border-radius: 0.375rem; /* rounded-md */
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+                        0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        #profileDropdown a {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: #374151; /* gray-700 */
+            text-decoration: none;
+        }
+
+        #profileDropdown a:hover {
+            background-color: #f3f4f6; /* gray-100 */
+        }
+
+        /* Profile button */
+        #profileButton {
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #374151; /* gray-700 */
+            padding: 0;
+        }
+
+        /* Inbox Icon Container */
+        #inboxIconContainer {
+            position: fixed;
+            top: 1rem;
+            right: 6.5rem; /* Positioned to the left of profile icon */
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #374151; /* Tailwind gray-700 */
+            z-index: 1000;
+            user-select: none;
+        }
+
+        /* Main content container for consistent padding and background */
+        main.content {
+            flex: 1;
+            padding: 2rem;
+            background-color: #f3f4f6; /* Tailwind gray-100 */
+            min-height: 100vh;
+        }
+
+        /* Layout flex for sidebar and main */
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f3f4f6;
+            margin: 0;
+        }
+
+        /* Sidebar from Circles page */
+        .sidebar {
+            background-color: white;
+            min-width: 12rem;
+            padding: 2rem 1rem;
+            box-shadow: 2px 0 6px rgb(0 0 0 / 0.1);
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 1.25rem;
+        }
+
+        .sidebar ul li a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #374151; /* Tailwind gray-700 */
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .sidebar ul li.active a {
+            font-weight: 700;
+            color: #1e40af; /* Tailwind blue-900 */
+        }
+
+        /* Message System Specific Styles */
+        .message-form-container, .sent-messages-container {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .message-form-container h2, .sent-messages-container h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #4b5563;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input[type="email"],
+        .form-group input[type="text"],
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            color: #374151;
+            box-sizing: border-box;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .send-button {
+            background-color: #1e40af; /* Tailwind blue-900 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+            border: none;
+        }
+
+        .send-button:hover {
+            background-color: #1e3a8a; /* Tailwind blue-800 */
+        }
+
+        .message-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .message-item {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            background-color: #f9fafb;
+        }
+
+        .message-item strong {
+            color: #1f2937; /* Tailwind gray-900 */
+        }
+
+        .message-item .timestamp {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+            display: block;
+        }
+
+        .no-messages {
+            color: #6b7280;
+            font-style: italic;
+            text-align: center;
+            padding: 1rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex">
+    <div class="sidebar">
+        <ul>
+            <li><a href="dashboard.html"><i class="icon">🏁</i><span>Dashboard</span></a></li>
+            <li><a href="users.html"><i class="icon">👤</i><span>Users</span></a></li>
+            <li><a href="circles.html"><i class="icon">⚪</i><span>Circles</span></a></li>
+            <li><a href="circle-tracker.html"><i class="icon">📊</i><span>Circle Tracker</span></a></li>
+            <li><a href="payments.html"><i class="icon">💵</i><span>Payments</span></a></li>
+        </ul>
+    </div>
+    
+    <main class="content">
+        <h1 class="text-2xl font-semibold text-gray-800 mb-6">Messages</h1>
+
+        <div class="message-form-container">
+            <h2>Compose New Message</h2>
+            <form id="composeMessageForm">
+                <div class="form-group">
+                    <label for="recipientEmail">Recipient Email:</label>
+                    <input type="email" id="recipientEmail" placeholder="recipient@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="messageSubject">Subject:</label>
+                    <input type="text" id="messageSubject" placeholder="Subject of your message" required>
+                </div>
+                <div class="form-group">
+                    <label for="messageBody">Message:</label>
+                    <textarea id="messageBody" placeholder="Type your message here..." required></textarea>
+                </div>
+                <button type="submit" class="send-button">Send Message</button>
+            </form>
+        </div>
+
+        <div class="sent-messages-container">
+            <h2>Sent Messages</h2>
+            <ul id="sentMessagesList" class="message-list">
+                <li class="no-messages" id="noSentMessages">No messages sent yet.</li>
+            </ul>
+        </div>
+    </main>
+
+    <div id="inboxIconContainer" title="Messages">
+        ✉️
+    </div>
+
+    <div class="notification-bell" title="Notifications">
+        🔔
+        <div class="badge">3</div>
+    </div>
+    <div id="profileMenuContainer">
+        <button id="profileButton" title="Profile">👤</button>
+        <div id="profileDropdown">
+            <a href="account.html">My Account</a>
+            <a href="login.html">Log Out</a>
+        </div>
+    </div>
+
+    <script>
+        // Toggle profile dropdown
+        const profileButton = document.getElementById('profileButton');
+        const profileDropdown = document.getElementById('profileDropdown');
+
+        profileButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const expanded = profileButton.getAttribute('aria-expanded') === 'true';
+            profileButton.setAttribute('aria-expanded', !expanded);
+            if (profileDropdown.style.display === 'block') {
+                profileDropdown.style.display = 'none';
+            } else {
+                profileDropdown.style.display = 'block';
+            }
+        });
+
+        // Close dropdown if clicking outside
+        document.addEventListener('click', (event) => {
+            if (!profileButton.contains(event.target) && !profileDropdown.contains(event.target)) {
+                profileDropdown.style.display = 'none';
+                profileButton.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        // Notification bell click example (could open notifications panel)
+        document.querySelector('.notification-bell').addEventListener('click', () => {
+            alert('You have new notifications!');
+        });
+
+        // Inbox Icon functionality
+        document.getElementById('inboxIconContainer').addEventListener('click', () => {
+            window.location.href = 'messages.html'; // Redirect to your messages page
+        });
+
+        // --- Message System Logic ---
+        const composeMessageForm = document.getElementById('composeMessageForm');
+        const recipientEmailInput = document.getElementById('recipientEmail');
+        const messageSubjectInput = document.getElementById('messageSubject');
+        const messageBodyTextarea = document.getElementById('messageBody');
+        const sentMessagesList = document.getElementById('sentMessagesList');
+        const noSentMessagesPlaceholder = document.getElementById('noSentMessages');
+
+        composeMessageForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const recipient = recipientEmailInput.value.trim();
+            const subject = messageSubjectInput.value.trim();
+            const body = messageBodyTextarea.value.trim();
+
+            if (recipient && subject && body) {
+                // In a real application, you would send this data to a backend server
+                // via an API call (e.g., using fetch()).
+                // The backend would then handle sending the email.
+                console.log('Simulating sending message:');
+                console.log('To:', recipient);
+                console.log('Subject:', subject);
+                console.log('Body:', body);
+
+                // Simulate adding the message to a "Sent" list on the frontend
+                addSentMessageToDisplay(recipient, subject, body);
+
+                // Clear the form fields
+                recipientEmailInput.value = '';
+                messageSubjectInput.value = '';
+                messageBodyTextarea.value = '';
+
+                alert('Message sent successfully (simulated)!');
+            } else {
+                alert('Please fill in all message fields.');
+            }
+        });
+
+        function addSentMessageToDisplay(recipient, subject, body) {
+            // Remove the "No messages sent yet." placeholder if it exists
+            if (noSentMessagesPlaceholder) {
+                noSentMessagesPlaceholder.remove();
+            }
+
+            const listItem = document.createElement('li');
+            listItem.classList.add('message-item');
+
+            const now = new Date();
+            const timestamp = now.toLocaleString(); // Format date and time nicely
+
+            listItem.innerHTML = `
+                <div><strong>To:</strong> ${recipient}</div>
+                <div><strong>Subject:</strong> ${subject}</div>
+                <div><strong>Message:</strong> ${body}</div>
+                <span class="timestamp">${timestamp}</span>
+            `;
+            sentMessagesList.prepend(listItem); // Add new messages to the top
+        }
+    </script>
+</body>
+</html>
