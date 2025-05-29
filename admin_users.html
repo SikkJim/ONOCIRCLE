@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Users</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin User Management</title>
     <link rel="stylesheet" href="styling.css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Red badge for notification and message count */
+        /* Red badge for notification and message count (Consistent with Dashboard) */
         .badge {
             position: absolute;
             top: 0;
@@ -30,13 +30,13 @@
             z-index: 10; /* Ensure badge is above link text */
         }
 
-        /* Profile dropdown - CORRECTED POSITIONING */
+        /* Profile dropdown - CORRECTED POSITIONING (Consistent with Dashboard) */
         #profileDropdown {
             display: none;
             position: absolute;
             top: calc(100% + 0.5rem); /* Position below the button with 0.5rem gap */
             left: 0; /* Align to the left edge of the profile link */
-            right: auto;
+            right: auto; /* Ensure it doesn't try to align right AND left */
             
             margin-top: 0;
             width: 10rem;
@@ -59,7 +59,7 @@
             background-color: #f3f4f6; /* gray-100 */
         }
 
-        /* Layout flex for sidebar and main */
+        /* Layout flex for sidebar and main (Consistent with Dashboard) */
         body {
             display: flex;
             min-height: 100vh;
@@ -89,7 +89,7 @@
             list-style: none;
             padding: 0;
             margin: 0;
-            flex-grow: 1; /* Allow the main navigation list to take up available space */
+            flex-grow: 1;
         }
 
         .sidebar ul li {
@@ -104,7 +104,7 @@
             text-decoration: none;
             font-weight: 600;
             font-size: 1rem;
-            font-style: italic; 
+            /* font-style: italic; REMOVED as per request */
         }
 
         .sidebar ul li.active a {
@@ -139,7 +139,7 @@
             text-decoration: none;
             font-weight: 600;
             font-size: 0.9rem; /* Decreased font size for bottom nav links */
-            /* font-style: italic; REMOVED as per request */
+            font-style: italic; 
             cursor: pointer;
             padding: 0.25rem 0; /* Add slight vertical padding */
             transition: color 0.2s ease; /* Smooth color transition on hover */
@@ -156,86 +156,39 @@
 
         /* Adjust icon within bottom nav links */
         .sidebar-bottom-nav li a .icon {
-            font-size: 1.2rem; /* Slightly smaller icons for bottom nav */
+            font-size: 1.2rem;
         }
 
-        /* Main content container - MODIFIED TO ACCOUNT FOR FIXED SIDEBAR (Consistent with Dashboard) */
+        /* Main content container */
         main.content {
             flex: 1;
             margin-left: 12rem; /* Add margin-left equal to sidebar width */
             padding: 2rem;
-            background-color: #f3f4f6; /* Tailwind gray-100 */
+            background-color: #f3f4f6;
             min-height: 100vh;
         }
 
-        /* Additional Users page styles */
-        .actions button {
-            margin-right: 0.5rem;
-            background-color: #3b82f6; /* Tailwind blue-500 */
-            color: white;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.375rem;
-            font-size: 0.875rem;
-            transition: background-color 0.2s ease-in-out;
-            border: none;
-        }
-
-        .actions button:hover {
-            background-color: #2563eb; /* Tailwind blue-700 */
-        }
-
-        .actions button.delete-user-btn {
-            background-color: #ef4444; /* Red for delete */
-        }
-
-        .actions button.delete-user-btn:hover {
-            background-color: #dc2626;
-        }
-
-        .pagination {
-            margin-top: 1rem;
-        }
-
-        .pagination button {
-            margin-right: 0.5rem;
-            padding: 0.25rem 0.5rem;
-            border: 1px solid #cbd5e1; /* Tailwind gray-300 */
-            border-radius: 0.375rem;
-            background-color: white;
-            cursor: pointer;
-            transition: background-color 0.2s ease-in-out;
-        }
-
-        .pagination button:disabled {
-            background-color: #93c5fd; /* Tailwind blue-300 */
-            cursor: default;
-        }
-
-        .pagination button:hover:not(:disabled) {
-            background-color: #bfdbfe; /* Tailwind blue-200 */
-        }
-
         /* Header controls aligned like dashboard top-bar */
-        .header-controls { /* Renamed from header-left for clarity */
+        .header-controls {
             display: flex;
-            flex-wrap: wrap; /* Allow wrapping for smaller screens */
+            flex-wrap: wrap;
             gap: 0.75rem;
             align-items: center;
             margin-bottom: 1rem;
-            background-color: white; /* Consistent with dashboard top-bar */
-            padding: 1rem; /* Consistent with dashboard top-bar */
-            border-radius: 0.5rem; /* Consistent with dashboard top-bar */
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08); /* Consistent with dashboard top-bar */
+            background-color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
         }
 
         .header-controls input[type="text"] {
             border: 1px solid #d1d5db;
             border-radius: 0.375rem;
-            padding: 0.75rem 1rem; /* Adjusted padding for taller input */
-            font-size: 0.95rem; /* Slightly larger font */
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
             outline: none;
             transition: box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
-            max-width: 300px; /* Limit max width like dashboard search */
+            max-width: 300px;
         }
 
         .header-controls input[type="text"]:focus {
@@ -246,9 +199,9 @@
         .header-controls button {
             background-color: #1e40af;
             color: white;
-            padding: 0.75rem 1.5rem; /* Adjusted padding */
+            padding: 0.75rem 1.5rem;
             border-radius: 0.375rem;
-            font-size: 0.95rem; /* Slightly larger font */
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
             transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
@@ -263,31 +216,8 @@
             transform: translateY(0);
         }
 
-        /* Styles for the invite buttons */
-        .invite-button {
-            background-color: white;
-            color: #1e40af;
-            border: 1px solid #d1d5db;
-            padding: 0.75rem 1.5rem; /* Adjusted padding */
-            border-radius: 0.375rem;
-            font-size: 0.95rem; /* Adjusted font size */
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, transform 0.1s ease-in-out;
-            white-space: nowrap; /* Prevent text wrapping */
-        }
-
-        .invite-button:hover {
-            background-color: #f3f4f6;
-            border-color: #a0aec0;
-            transform: translateY(-1px);
-        }
-        .invite-button:active {
-            transform: translateY(0);
-        }
-
         /* Table styling consistent with Dashboard panels */
-        table#usersTable {
+        table#usersTable { /* Still named usersTable in admin_users, kept for now */
             width: 100%;
             border-collapse: collapse;
             font-size: 0.875rem;
@@ -295,8 +225,8 @@
             background-color: white;
             border-radius: 0.5rem;
             overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Consistent shadow with panels */
-            margin-top: 1.5rem; /* Adjusted margin */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-top: 1.5rem;
         }
 
         table#usersTable thead {
@@ -315,14 +245,61 @@
         }
 
         table#usersTable tbody tr:last-child td {
-            border-bottom: none; /* No border on the last row */
+            border-bottom: none;
         }
 
         table#usersTable tbody tr:hover {
             background-color: #f3f4f6;
         }
 
-        /* Add/Edit User Pop-up Styles (kept consistent) */
+        /* Action buttons in table (edit/delete) */
+        .actions button {
+            margin-right: 0.5rem;
+            background-color: #3b82f6;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            transition: background-color 0.2s ease-in-out;
+            border: none;
+        }
+
+        .actions button:hover {
+            background-color: #2563eb;
+        }
+        /* Specific delete button styling */
+        .actions button.delete-user-btn {
+            background-color: #ef4444;
+        }
+        .actions button.delete-user-btn:hover {
+            background-color: #dc2626;
+        }
+
+        /* Pagination buttons */
+        .pagination {
+            margin-top: 1rem;
+        }
+
+        .pagination button {
+            margin-right: 0.5rem;
+            padding: 0.25rem 0.5rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.375rem;
+            background-color: white;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .pagination button:disabled {
+            background-color: #93c5fd;
+            cursor: default;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background-color: #bfdbfe;
+        }
+
+        /* Add/Edit User Pop-up Styles */
         .popup-overlay {
             display: none;
             position: fixed;
@@ -443,7 +420,7 @@
             background-color: #d1d5db;
         }
 
-        /* Confirmation Modal Styles (kept consistent) */
+        /* Confirmation Modal Styles */
         .confirm-modal-overlay {
             display: none;
             position: fixed;
@@ -573,23 +550,25 @@
     <div class="sidebar">
         <ul>
             <li><a href="dashboard.html"><i class="icon">🏁</i><span>Dashboard</span></a></li>
-            <li class="active"><a href="users.html"><i class="icon">👤</i><span>Users</span></a></li>
+            <li><a href="users.html"><i class="icon">👤</i><span>Users</span></a></li>
             <li><a href="circles.html"><i class="icon">⚪</i><span>Circles</span></a></li>
             <li><a href="circle-tracker.html"><i class="icon">📊</i><span>Circle Tracker</span></a></li>
             <li><a href="payments.html"><i class="icon">💵</i><span>Payments</span></a></li>
-            <li><a href="admin_users.html"><i class="icon">👑</i><span>Admin</span></a></li>
+            <li class="active"><a href="admin_users.html"><i class="icon">👑</i><span>Admin</span></a></li>
         </ul>
 
         <ul class="sidebar-bottom-nav">
             <li>
                 <a href="messages.html" id="inboxIconContainer">
                     <i class="icon">✉️</i><span>Messages</span>
-                    <span class="badge" id="messageCount">0</span> </a>
+                    <span class="badge" id="messageCount">0</span>
+                </a>
             </li>
             <li>
                 <a href="#" id="notificationBellAnchor">
                     <i class="icon">🔔</i><span>Notifications</span>
-                    <span class="badge" id="notificationCount">0</span> </a>
+                    <span class="badge" id="notificationCount">0</span>
+                </a>
             </li>
             <li id="profileMenuContainer">
                 <a href="#" id="profileButton" aria-haspopup="true" aria-expanded="false" aria-controls="profileDropdown"><i class="icon">👤</i><span>Profile</span></a>
@@ -602,14 +581,12 @@
     </div>
 
     <main class="content">
-        <h1 class="text-2xl font-semibold text-gray-800 mb-6">Users</h1>
-        <h2 class="text-lg font-medium text-gray-700 mb-4">Manage Users</h2>
+        <h1 class="text-2xl font-semibold text-gray-800 mb-2">Admin User Management</h1>
+        <p class="text-gray-500 mb-6">CRUD Users (Admin Only)</p>
 
         <div class="header-controls">
             <input id="searchUser" type="text" placeholder="Search users..." />
             <button id="addUserButton">Add User</button>
-            <button id="inviteCirclesButton" class="invite-button">INVITE USERS<br>IN CIRCLES</button>
-            <button id="inviteWithoutCirclesButton" class="invite-button">INVITE USERS<br>W/O CIRCLES</button>
         </div>
 
         <table id="usersTable" aria-label="Users table">
@@ -624,26 +601,26 @@
                 </tr>
             </thead>
             <tbody id="usersTableBody">
-                <tr>
-                    <td>001</td>
-                    <td>Alice Smith</td>
-                    <td>alice@example.com</td>
+                <tr data-user-id="101">
+                    <td>101</td>
+                    <td>Admin User</td>
+                    <td>admin@example.com</td>
                     <td>Admin</td>
                     <td>Active</td>
                     <td class="actions">
-                        <button class="edit-user-btn">Edit</button>
-                        <button class="delete-user-btn">Delete</button>
+                        <button class="edit-user-btn" data-user-id="101">Edit</button>
+                        <button class="delete-user-btn" data-user-id="101">Delete</button>
                     </td>
                 </tr>
-                <tr>
-                    <td>002</td>
-                    <td>Bob Johnson</td>
-                    <td>bob@example.com</td>
+                <tr data-user-id="102">
+                    <td>102</td>
+                    <td>Regular User</td>
+                    <td>user@example.com</td>
                     <td>User</td>
-                    <td>Inactive</td>
+                    <td>Active</td>
                     <td class="actions">
-                        <button class="edit-user-btn">Edit</button>
-                        <button class="delete-user-btn">Delete</button>
+                        <button class="edit-user-btn" data-user-id="102">Edit</button>
+                        <button class="delete-user-btn" data-user-id="102">Delete</button>
                     </td>
                 </tr>
             </tbody>
@@ -662,6 +639,7 @@
                 <button class="close-btn" onclick="closeUserPopup()">×</button>
             </div>
             <form id="userForm">
+                <input type="hidden" id="userId" value="">
                 <div class="form-group">
                     <label for="userName">Name:</label>
                     <input type="text" id="userName" required>
@@ -672,11 +650,19 @@
                 </div>
                 <div class="form-group">
                     <label for="userRole">Role:</label>
-                    <input type="text" id="userRole" required>
+                    <select id="userRole" required>
+                        <option value="User">User</option>
+                        <option value="Admin">Admin</option>
+                        <option value="Editor">Editor</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="userStatus">Status:</label>
-                    <input type="text" id="userStatus" required>
+                    <select id="userStatus" required>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                        <option value="Pending">Pending</option>
+                    </select>
                 </div>
                 <div class="popup-buttons">
                     <button type="submit" class="submit-btn" id="submitUserButton">Add User</button>
@@ -713,12 +699,13 @@
         const userPopupTitle = document.getElementById('userPopupTitle');
         const userForm = document.getElementById('userForm');
         const submitUserButton = document.getElementById('submitUserButton');
+        const userIdInput = document.getElementById('userId'); // Hidden ID field
         const userNameInput = document.getElementById('userName');
         const userEmailInput = document.getElementById('userEmail');
-        const userRoleInput = document.getElementById('userRole');
-        const userStatusInput = document.getElementById('userStatus');
+        const userRoleInput = document.getElementById('userRole'); // Now a select
+        const userStatusInput = document.getElementById('userStatus'); // Now a select
 
-        // Confirmation Modal elements
+        // Confirmation Modal elements (ensure these are correctly identified from HTML)
         const confirmDeleteModal = document.getElementById('confirmDeleteModal');
         const confirmDeleteYesButton = document.getElementById('confirmDeleteYes');
         const confirmDeleteNoButton = document.getElementById('confirmDeleteNo');
@@ -739,6 +726,7 @@
             currentRowBeingEdited = null;
             userPopupTitle.textContent = 'Add New User';
             submitUserButton.textContent = 'Add User';
+            userIdInput.value = ''; // Clear hidden ID
         }
 
         // --- Add User Logic ---
@@ -750,11 +738,19 @@
             openUserPopup();
         });
 
+        // Simulates adding a new user (replace with actual backend API call)
         function createNewUserRow(name, email, role, status) {
+            // In a real app, this would send a POST request to your backend
+            // const response = await fetch('/api/admin/users/create', { method: 'POST', body: JSON.stringify({ name, email, role, status }) });
+            // const newUser = await response.json(); // Backend would return the new user with an ID
+            // And then you'd add the row based on the 'newUser' object.
+
+            // Frontend simulation:
             const currentRows = usersTableBody.getElementsByTagName('tr').length;
-            const newUserId = (currentRows + 1).toString().padStart(3, '0'); // e.g., 003, 004
+            const newUserId = (100 + currentRows + 1).toString(); // Simulate new ID (e.g., 103, 104...)
 
             const newRow = document.createElement('tr');
+            newRow.setAttribute('data-user-id', newUserId); // Set data-user-id for future editing/deleting
             newRow.innerHTML = `
                 <td>${newUserId}</td>
                 <td>${name}</td>
@@ -762,8 +758,8 @@
                 <td>${role}</td>
                 <td>${status}</td>
                 <td class="actions">
-                    <button class="edit-user-btn">Edit</button>
-                    <button class="delete-user-btn">Delete</button>
+                    <button class="edit-user-btn" data-user-id="${newUserId}">Edit</button>
+                    <button class="delete-user-btn" data-user-id="${newUserId}">Delete</button>
                 </td>
             `;
             usersTableBody.appendChild(newRow);
@@ -778,15 +774,21 @@
             submitUserButton.textContent = 'Save Changes';
 
             const cells = row.querySelectorAll('td');
+            userIdInput.value = cells[0].textContent; // Get the ID from the first cell
             userNameInput.value = cells[1].textContent;
             userEmailInput.value = cells[2].textContent;
-            userRoleInput.value = cells[3].textContent;
-            userStatusInput.value = cells[4].textContent;
+            userRoleInput.value = cells[3].textContent; // Set selected value for role
+            userStatusInput.value = cells[4].textContent; // Set selected value for status
 
             openUserPopup();
         }
 
-        function updateExistingUserRow(name, email, role, status) {
+        // Simulates updating an existing user (replace with actual backend API call)
+        function updateExistingUserRow(id, name, email, role, status) {
+            // In a real app, this would send a PUT/POST request to your backend
+            // const response = await fetch(`/api/admin/users/${id}`, { method: 'PUT', body: JSON.stringify({ name, email, role, status }) });
+            // const updatedUser = await response.json(); // Backend would return the updated user
+
             if (!currentRowBeingEdited) return; // Should not happen
 
             const cells = currentRowBeingEdited.querySelectorAll('td');
@@ -801,10 +803,11 @@
         userForm.addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent default form submission
 
+            const id = userIdInput.value; // Will be empty for add, populated for edit
             const name = userNameInput.value.trim();
             const email = userEmailInput.value.trim();
-            const role = userRoleInput.value.trim();
-            const status = userStatusInput.value.trim();
+            const role = userRoleInput.value; // Value from select
+            const status = userStatusInput.value; // Value from select
 
             if (!name || !email || !role || !status) {
                 alert('Please fill in all fields.');
@@ -812,7 +815,7 @@
             }
 
             if (isEditingUserMode) {
-                updateExistingUserRow(name, email, role, status);
+                updateExistingUserRow(id, name, email, role, status);
             } else {
                 createNewUserRow(name, email, role, status);
             }
@@ -820,6 +823,7 @@
         });
 
         // --- Delete User Logic (with Confirmation Modal) ---
+        // This function is correctly defined and now hooked up via event delegation
         function showConfirmDeleteModal(row) {
             rowToDelete = row;
             confirmDeleteModal.style.display = 'flex';
@@ -832,6 +836,13 @@
 
         confirmDeleteYesButton.addEventListener('click', () => {
             if (rowToDelete) {
+                // In a real app, this would send a DELETE request to your backend
+                // const userIdToDelete = rowToDelete.dataset.userId;
+                // fetch(`/api/admin/users/${userIdToDelete}`, { method: 'DELETE' })
+                // .then(response => { if (response.ok) { rowToDelete.remove(); alert('User deleted successfully!'); } })
+                // .catch(error => console.error('Delete error:', error));
+
+                // Frontend simulation:
                 rowToDelete.remove();
                 alert('User deleted successfully!');
             }
@@ -844,6 +855,7 @@
 
 
         // --- Event Delegation for Edit and Delete Buttons in Table ---
+        // This is the key part that triggers the delete modal
         usersTableBody.addEventListener('click', function(event) {
             const target = event.target;
 
@@ -853,9 +865,9 @@
                     openEditUserPopup(rowToEdit);
                 }
             } else if (target.classList.contains('delete-user-btn')) {
-                const row = target.closest('tr');
+                const row = target.closest('tr'); // Get the row (<tr>) containing the clicked button
                 if (row) {
-                    showConfirmDeleteModal(row);
+                    showConfirmDeleteModal(row); // Pass the row to the function
                 }
             }
         });

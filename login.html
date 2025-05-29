@@ -22,13 +22,41 @@
             max-width: 150px;
             margin-bottom: 20px;
         }
+
+        /* Custom styles for messages/alerts */
+        .form-message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .form-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .form-message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        /* Ensure the section takes full height for centering */
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        section.text-center.text-lg-start {
+            min-height: 100vh; /* Use min-height for responsiveness */
+            display: flex;
+            align-items: center; /* Vertically center the content */
+        }
     </style>
 </head>
 
 <body>
     <section class="text-center text-lg-start">
         <div class="container py-4">
-            <div class="row g-0 align-items-center">
+            <div class="row g-0 align-items-center justify-content-center">
                 <div class="col-lg-6 mb-5 mb-lg-0">
                     <div class="card cascading-right bg-body-tertiary" style="backdrop-filter: blur(30px);">
                         <div class="card-body p-5 shadow-5 text-center">
@@ -55,6 +83,8 @@
                                         Remember me
                                     </label>
                                 </div>
+
+                                <div id="formMessage" class="form-message d-none"></div>
 
                                 <button type="submit" class="btn btn-primary btn-block mb-4">
                                     Login
@@ -88,29 +118,135 @@
                     </div>
                 </div>
 
-                <div class="col-lg-6 mb-5 mb-lg-0">
-                    <img src="https://mdbootstrap.com/img/new/ecommerce/vertical/004.jpg" class="w-100 rounded-4 shadow-4"
-                        alt="" />
+                <div class="col-lg-6 d-none d-lg-block"> <img src="https://mdbootstrap.com/img/new/ecommerce/vertical/004.jpg" class="w-100 rounded-4 shadow-4"
+                        alt="Background Image" />
                 </div>
             </div>
         </div>
     </section>
+
+    <div class="modal fade" id="twoFactorModal" tabindex="-1" aria-labelledby="twoFactorModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="twoFactorModalLabel">Two-Factor Authentication</h5>
+                    <button type="button" class="btn-close btn-close-white" data-mdb-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <i class="fas fa-mobile-alt fa-4x text-primary mb-3"></i>
+                    <p class="fs-6">Please enter the 6-digit code from your authenticator app or check your registered device (SMS/Email).</p>
+                    <form id="twoFactorForm">
+                        <div class="form-outline mb-4">
+                            <input type="text" id="twoFactorCode" class="form-control" pattern="\d{6}" maxlength="6" inputmode="numeric" required />
+                            <label class="form-label" for="twoFactorCode">2FA Code</label>
+                        </div>
+                        <div id="twoFactorMessage" class="form-message d-none text-danger"></div>
+                        <button type="submit" class="btn btn-primary btn-block">Verify Code</button>
+                    </form>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <p class="text-muted">Having trouble? <a href="#">Contact Support</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.js"></script>
     <script>
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault();
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize MDBootstrap form outlines
+            document.querySelectorAll('.form-outline').forEach((formOutline) => {
+                new mdb.Input(formOutline).init();
+            });
 
-            // In a real application, you would perform server-side validation here.
-            // For now, we'll simulate a successful login.
+            const loginForm = document.getElementById('loginForm');
+            const loginEmailInput = document.getElementById('loginEmail');
+            const loginPasswordInput = document.getElementById('loginPassword');
+            const formMessageDiv = document.getElementById('formMessage');
 
-            // Simulate successful login (replace with your actual login logic)
-            const success = true; // Replace with your actual login result.
+            const twoFactorModalElement = document.getElementById('twoFactorModal');
+            const twoFactorModal = new mdb.Modal(twoFactorModalElement);
+            const twoFactorForm = document.getElementById('twoFactorForm');
+            const twoFactorCodeInput = document.getElementById('twoFactorCode');
+            const twoFactorMessageDiv = document.getElementById('twoFactorMessage');
 
-            if (success) {
-                window.location.href = 'dashboard.html'; // Redirect to dashboard.html
-            } else {
-                alert('Login failed. Please check your credentials.'); // Or display an error message in a better way.
+            function showMessage(targetDiv, message, type = 'error') {
+                targetDiv.textContent = message;
+                targetDiv.classList.remove('d-none', 'error', 'success');
+                targetDiv.classList.add(type);
+                // Apply MDBootstrap alert classes for better styling
+                if (type === 'success') {
+                    targetDiv.classList.add('alert', 'alert-success');
+                } else {
+                    targetDiv.classList.add('alert', 'alert-danger');
+                }
             }
+
+            function clearMessage(targetDiv) {
+                targetDiv.textContent = '';
+                targetDiv.classList.add('d-none');
+                targetDiv.classList.remove('error', 'success', 'alert', 'alert-success', 'alert-danger');
+            }
+
+            loginForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                clearMessage(formMessageDiv);
+
+                const email = loginEmailInput.value.trim();
+                const password = loginPasswordInput.value;
+
+                if (!email || !password) {
+                    showMessage(formMessageDiv, 'Please enter both email and password.');
+                    return;
+                }
+
+                // --- Frontend Simulation for Demo (initial login API call) ---
+                setTimeout(() => {
+                    const loginSuccessful = true; // Simulate successful email/password validation
+                    const requiresTwoFactor = true; // Set to true to test 2FA flow, false to bypass
+
+                    if (loginSuccessful) {
+                        if (requiresTwoFactor) {
+                            twoFactorModal.show();
+                            clearMessage(twoFactorMessageDiv); // Ensure 2FA modal starts clean
+                            twoFactorCodeInput.value = ''; // Clear 2FA input
+                            new mdb.Input(twoFactorCodeInput.parentElement).init(); // Re-init MDB input for 2FA code
+                        } else {
+                            // Direct redirect if 2FA is not required
+                            window.location.href = 'dashboard.html';
+                        }
+                    } else {
+                        showMessage(formMessageDiv, 'Login failed. Please check your credentials.');
+                    }
+                }, 500); // Simulate network delay for initial login
+            });
+
+            twoFactorForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                clearMessage(twoFactorMessageDiv);
+
+                const twoFactorCode = twoFactorCodeInput.value.trim();
+
+                // Client-side validation: must be 6 digits
+                if (twoFactorCode.length !== 6 || !/^\d+$/.test(twoFactorCode)) {
+                    showMessage(twoFactorMessageDiv, 'Please enter a valid 6-digit code.', 'error');
+                    return;
+                }
+
+                // --- Frontend Simulation for Demo (2FA verification) ---
+                // For testing purposes, any 6-digit code will be considered valid.
+                setTimeout(() => {
+                    const twoFactorVerified = true; // Any 6-digit code is considered valid for testing.
+
+                    if (twoFactorVerified) {
+                        twoFactorModal.hide();
+                        window.location.href = 'dashboard.html'; // Redirect to dashboard.html
+                    } else {
+                        // This else block would technically only be hit if twoFactorVerified was manually set to false.
+                        showMessage(twoFactorMessageDiv, 'Invalid 2FA code. Please try again.', 'error');
+                    }
+                }, 500); // Simulate network delay for 2FA verification
+            });
         });
     </script>
 </body>

@@ -22,13 +22,36 @@
             max-width: 150px;
             margin-bottom: 20px;
         }
+
+        /* Custom styles for messages/alerts if needed (though MDB has its own) */
+        .form-message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .form-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Ensure the section takes full height for centering */
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        section.text-center.text-lg-start {
+            min-height: 100vh; /* Use min-height for responsiveness */
+            display: flex;
+            align-items: center; /* Vertically center the content */
+        }
     </style>
 </head>
 
 <body>
     <section class="text-center text-lg-start">
         <div class="container py-4">
-            <div class="row g-0 align-items-center">
+            <div class="row g-0 align-items-center justify-content-center">
                 <div class="col-lg-6 mb-5 mb-lg-0">
                     <div class="card cascading-right bg-body-tertiary" style="backdrop-filter: blur(30px);">
                         <div class="card-body p-5 shadow-5 text-center">
@@ -38,7 +61,7 @@
                             </div>
 
                             <h2 class="fw-bold mb-4">Register</h2>
-                            <form>
+                            <form id="registrationForm">
                                 <div class="form-outline mb-4">
                                     <input type="text" id="registerName" class="form-control" required />
                                     <label class="form-label" for="registerName">Full Name</label>
@@ -59,6 +82,8 @@
                                     <label class="form-label" for="confirmPassword">Confirm Password</label>
                                 </div>
 
+                                <div id="formMessage" class="form-message d-none"></div>
+
                                 <button type="submit" class="btn btn-primary btn-block mb-4">
                                     Register
                                 </button>
@@ -71,14 +96,151 @@
                     </div>
                 </div>
 
-                <div class="col-lg-6 mb-5 mb-lg-0">
-                    <img src="https://mdbootstrap.com/img/new/ecommerce/vertical/004.jpg" class="w-100 rounded-4 shadow-4"
-                        alt="" />
+                <div class="col-lg-6 d-none d-lg-block"> <img src="https://mdbootstrap.com/img/new/ecommerce/vertical/004.jpg" class="w-100 rounded-4 shadow-4"
+                        alt="Background Image" />
                 </div>
             </div>
         </div>
     </section>
+
+    <div class="modal fade" id="registrationSuccessModal" tabindex="-1" aria-labelledby="registrationSuccessModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="registrationSuccessModalLabel">Registration Successful!</h5>
+                    <button type="button" class="btn-close btn-close-white" data-mdb-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <i class="fas fa-check-circle fa-5x text-success mb-3"></i>
+                    <p class="fs-5">You have successfully registered your account.</p>
+                    <p>Please proceed to the login page to continue.</p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-primary" id="goToLoginButton">Go to Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize MDBootstrap form outlines
+            document.querySelectorAll('.form-outline').forEach((formOutline) => {
+                new mdb.Input(formOutline).init();
+            });
+
+            const registrationForm = document.getElementById('registrationForm');
+            const registerNameInput = document.getElementById('registerName');
+            const registerEmailInput = document.getElementById('registerEmail');
+            const registerPasswordInput = document.getElementById('registerPassword');
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+            const formMessageDiv = document.getElementById('formMessage');
+            const registrationSuccessModal = new mdb.Modal(document.getElementById('registrationSuccessModal'));
+            const goToLoginButton = document.getElementById('goToLoginButton');
+
+            function showMessage(message, type = 'error') {
+                formMessageDiv.textContent = message;
+                formMessageDiv.classList.remove('d-none', 'error', 'success');
+                formMessageDiv.classList.add(type);
+                if (type === 'success') {
+                    // MDB classes for success (if you prefer inline messages over modal)
+                    formMessageDiv.classList.add('alert', 'alert-success');
+                } else {
+                    formMessageDiv.classList.add('alert', 'alert-danger');
+                }
+            }
+
+            function clearMessage() {
+                formMessageDiv.textContent = '';
+                formMessageDiv.classList.add('d-none');
+                formMessageDiv.classList.remove('error', 'success', 'alert', 'alert-success', 'alert-danger');
+            }
+
+            registrationForm.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent default form submission
+                clearMessage(); // Clear any previous messages
+
+                const name = registerNameInput.value.trim();
+                const email = registerEmailInput.value.trim();
+                const password = registerPasswordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+
+                // Basic frontend validation
+                if (!name || !email || !password || !confirmPassword) {
+                    showMessage('All fields are required.');
+                    return;
+                }
+
+                if (password !== confirmPassword) {
+                    showMessage('Passwords do not match.');
+                    return;
+                }
+
+                // Password strength validation (example - customize as needed)
+                if (password.length < 8) {
+                    showMessage('Password must be at least 8 characters long.');
+                    return;
+                }
+                // Add more complex regex for password if desired
+                // const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // Min 8 chars, at least one letter and one number
+                // if (!passwordRegex.test(password)) {
+                //     showMessage('Password must contain at least 8 characters, including letters and numbers.');
+                //     return;
+                // }
+
+
+                // --- Simulate API call for registration ---
+                // In a real application, you would send this data to your backend
+                // using fetch() or XMLHttpRequest.
+                // Example:
+                // fetch('/api/register', {
+                //     method: 'POST',
+                //     headers: {
+                //         'Content-Type': 'application/json',
+                //     },
+                //     body: JSON.stringify({ name, email, password }),
+                // })
+                // .then(response => response.json())
+                // .then(data => {
+                //     if (data.success) {
+                //         registrationSuccessModal.show(); // Show success modal
+                //         registrationForm.reset(); // Clear the form
+                //     } else {
+                //         showMessage(data.message || 'Registration failed. Please try again.', 'error');
+                //     }
+                // })
+                // .catch(error => {
+                //     console.error('Error:', error);
+                //     showMessage('Network error. Please try again later.', 'error');
+                // });
+
+                // --- For demonstration purposes, we'll simulate success immediately ---
+                // Remove the setTimeout and replace `true` with `data.success` from your API response
+                setTimeout(() => {
+                    const registrationSuccessful = true; // Simulate successful registration
+
+                    if (registrationSuccessful) {
+                        registrationSuccessModal.show(); // Show the MDB success modal
+                        registrationForm.reset(); // Clear the form fields after successful registration
+                        // Re-initialize MDB inputs for cleared fields to fix label positioning
+                        document.querySelectorAll('.form-outline').forEach((formOutline) => {
+                            new mdb.Input(formOutline).init();
+                        });
+                    } else {
+                        // This block would run if your backend returned a failure
+                        showMessage('Registration failed. This email might already be registered.', 'error');
+                    }
+                }, 500); // Simulate a small delay for a real-world feel
+            });
+
+            // Handle the "Go to Login" button click within the modal
+            goToLoginButton.addEventListener('click', function() {
+                registrationSuccessModal.hide(); // Hide the modal
+                window.location.href = 'login.html'; // Redirect to the login page
+            });
+        });
+    </script>
 </body>
 
 </html>
