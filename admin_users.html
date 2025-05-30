@@ -139,7 +139,6 @@
             text-decoration: none;
             font-weight: 600;
             font-size: 0.9rem; /* Decreased font size for bottom nav links */
-            font-style: italic; 
             cursor: pointer;
             padding: 0.25rem 0; /* Add slight vertical padding */
             transition: color 0.2s ease; /* Smooth color transition on hover */
@@ -548,6 +547,12 @@
 </head>
 <body>
     <div class="sidebar">
+        <div class="sidebar-logo mb-8 mt-2 text-center">
+            <a href="dashboard.html">
+                <img src="Images/logo.png" alt="UNOCIRCLE Logo" class="h-12 w-auto mx-auto object-contain">
+            </a>
+        </div>
+
         <ul>
             <li><a href="dashboard.html"><i class="icon">🏁</i><span>Dashboard</span></a></li>
             <li><a href="users.html"><i class="icon">👤</i><span>Users</span></a></li>
@@ -561,14 +566,12 @@
             <li>
                 <a href="messages.html" id="inboxIconContainer">
                     <i class="icon">✉️</i><span>Messages</span>
-                    <span class="badge" id="messageCount">0</span>
-                </a>
+                    <span class="badge" id="messageCount">0</span> </a>
             </li>
             <li>
                 <a href="#" id="notificationBellAnchor">
                     <i class="icon">🔔</i><span>Notifications</span>
-                    <span class="badge" id="notificationCount">0</span>
-                </a>
+                    <span class="badge" id="notificationCount">0</span> </a>
             </li>
             <li id="profileMenuContainer">
                 <a href="#" id="profileButton" aria-haspopup="true" aria-expanded="false" aria-controls="profileDropdown"><i class="icon">👤</i><span>Profile</span></a>

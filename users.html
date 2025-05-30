@@ -104,7 +104,6 @@
             text-decoration: none;
             font-weight: 600;
             font-size: 1rem;
-            font-style: italic; 
         }
 
         .sidebar ul li.active a {
@@ -345,6 +344,8 @@
             max-width: 500px;
             position: relative;
             animation: fadeIn 0.3s ease-out;
+            max-height: 90vh; /* Allow scrolling */
+            overflow-y: auto;
         }
 
         @keyframes fadeIn {
@@ -392,7 +393,7 @@
         }
 
         .user-popup .form-group input,
-        .user-popup .form-group select {
+        .user-popup .form-group select { /* Added select to this rule */
             width: 100%;
             padding: 10px 12px;
             border: 1px solid #d1d5db;
@@ -403,7 +404,7 @@
         }
 
         .user-popup .form-group input:focus,
-        .user-popup .form-group select:focus {
+        .user-popup .form-group select:focus { /* Added select to this rule */
             outline: none;
             border-color: #3b82f6;
             box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
@@ -512,6 +513,141 @@
         .confirm-modal-buttons .confirm-no:hover {
             background-color: #d1d5db;
         }
+        /* Specific styles for private user options */
+        .private-user-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            border: 1px dashed #d1d5db;
+            border-radius: 5px;
+            background-color: #f9fafb;
+        }
+        .private-user-options label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: #4b5563;
+            margin-bottom: 0; /* Override form-group margin */
+        }
+        .private-user-options input[type="checkbox"] {
+            width: auto; /* Reset width for checkbox */
+            padding: 0;
+            margin: 0;
+            height: 18px; /* Make checkbox visible */
+            width: 18px;
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+        .private-user-options button {
+            background-color: #10B981; /* Green for payment */
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s ease;
+            align-self: flex-start; /* Align button to start */
+        }
+        .private-user-options button:hover {
+            background-color: #059669;
+        }
+
+        /* Styles for the new Transaction Log Popup */
+        .transaction-log-popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 2500; /* Higher than other popups */
+        }
+        .transaction-log-popup {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            width: 90%;
+            max-width: 900px; /* Wider to show log details */
+            height: 80vh; /* Fixed height for scrolling */
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+        }
+        .transaction-log-popup .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .transaction-log-popup .popup-header h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #374151;
+            margin: 0;
+        }
+        .transaction-log-popup .popup-header .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: #6b7280;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+        }
+        .transaction-log-popup .filter-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .transaction-log-popup .filter-controls input,
+        .transaction-log-popup .filter-controls select {
+            flex: 1;
+            min-width: 150px;
+            padding: 8px 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+        .transaction-log-list {
+            flex-grow: 1;
+            overflow-y: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 5px;
+            background-color: #fff;
+            padding: 10px;
+        }
+        .transaction-log-list ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .transaction-log-list li {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            color: #4b5563;
+        }
+        .transaction-log-list li:last-child {
+            margin-bottom: 0;
+        }
+        .transaction-log-list li strong {
+            color: #374151;
+        }
+
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
@@ -566,11 +702,21 @@
             .dashboard-panel { /* This class is not directly on this page, but keeping here as a placeholder for consistency */
                 padding: 1.5rem;
             }
+            .transaction-log-popup {
+                height: 90vh; /* Adjust height for mobile */
+                max-width: 95%;
+            }
         }
     </style>
 </head>
 <body>
     <div class="sidebar">
+        <div class="sidebar-logo mb-8 mt-2 text-center">
+            <a href="dashboard.html">
+                <img src="Images/logo.png" alt="UNOCIRCLE Logo" class="h-12 w-auto mx-auto object-contain">
+            </a>
+        </div>
+
         <ul>
             <li><a href="dashboard.html"><i class="icon">🏁</i><span>Dashboard</span></a></li>
             <li class="active"><a href="users.html"><i class="icon">👤</i><span>Users</span></a></li>
@@ -610,7 +756,7 @@
             <button id="addUserButton">Add User</button>
             <button id="inviteCirclesButton" class="invite-button">INVITE USERS<br>IN CIRCLES</button>
             <button id="inviteWithoutCirclesButton" class="invite-button">INVITE USERS<br>W/O CIRCLES</button>
-        </div>
+            <button id="viewTransactionLogBtn" class="invite-button">VIEW TRANSACTION LOG</button> </div>
 
         <table id="usersTable" aria-label="Users table">
             <thead>
@@ -624,29 +770,7 @@
                 </tr>
             </thead>
             <tbody id="usersTableBody">
-                <tr>
-                    <td>001</td>
-                    <td>Alice Smith</td>
-                    <td>alice@example.com</td>
-                    <td>Admin</td>
-                    <td>Active</td>
-                    <td class="actions">
-                        <button class="edit-user-btn">Edit</button>
-                        <button class="delete-user-btn">Delete</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>002</td>
-                    <td>Bob Johnson</td>
-                    <td>bob@example.com</td>
-                    <td>User</td>
-                    <td>Inactive</td>
-                    <td class="actions">
-                        <button class="edit-user-btn">Edit</button>
-                        <button class="delete-user-btn">Delete</button>
-                    </td>
-                </tr>
-            </tbody>
+                </tbody>
         </table>
 
         <div class="pagination">
@@ -672,12 +796,32 @@
                 </div>
                 <div class="form-group">
                     <label for="userRole">Role:</label>
-                    <input type="text" id="userRole" required>
+                    <select id="userRole" required>
+                        <option value="User">User</option>
+                        <option value="Admin">Admin</option>
+                        <option value="Sponsored User">Sponsored User</option>
+                        <option value="System Admin">System Admin</option>
+                        <option value="Private User">Private User</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="userStatus">Status:</label>
                     <input type="text" id="userStatus" required>
                 </div>
+
+                <div id="privateUserOptions" class="private-user-options" style="display: none;">
+                    <h4>Private User Options:</h4>
+                    <label>
+                        <input type="checkbox" id="donatesToChallengeOptOut">
+                        Opt out of 52-week Donation Challenge
+                    </label>
+                    <p class="text-sm">Payment status for Circle #18: <span id="circle18PaymentStatus">Not Paid</span></p>
+                    <button type="button" id="markCircle18PaidBtn">Mark Payment for Circle #18</button>
+                    <p class="text-xs text-gray-500 mt-2">
+                        <em>(In a real system, payment status would be per-circle per-user and handled via payment gateway)</em>
+                    </p>
+                </div>
+
                 <div class="popup-buttons">
                     <button type="submit" class="submit-btn" id="submitUserButton">Add User</button>
                     <button type="button" class="cancel-btn" onclick="closeUserPopup()">Cancel</button>
@@ -697,16 +841,123 @@
         </div>
     </div>
 
+    <div class="transaction-log-popup-overlay" id="transactionLogPopupContainer">
+        <div class="transaction-log-popup">
+            <div class="popup-header">
+                <h3>Transaction History Log</h3>
+                <button class="close-btn" onclick="closeTransactionLogPopup()">×</button>
+            </div>
+            <div class="filter-controls">
+                <input type="date" id="logFilterStartDate" title="Filter by Start Date">
+                <input type="date" id="logFilterEndDate" title="Filter by End Date">
+                <select id="logFilterActivityType" title="Filter by Activity Type">
+                    <option value="">All Activity Types</option>
+                    <option value="User Created">User Created</option>
+                    <option value="User Updated">User Updated</option>
+                    <option value="User Deleted">User Deleted</option>
+                    <option value="Circle Payment Marked">Circle Payment Marked</option>
+                    <option value="Circle Created">Circle Created</option>
+                    <option value="Circle Updated">Circle Updated</option>
+                    <option value="Circle Duplicated">Circle Duplicated</option>
+                    <option value="Sponsored User Assigned">Sponsored User Assigned</option>
+                    <option value="Sponsored User Completion">Sponsored User Completion</option>
+                    <option value="Sponsored User Invite">Sponsored User Invite</option>
+                    </select>
+                <button id="applyLogFiltersBtn" class="bg-blue-500 text-white px-3 py-2 rounded">Apply Filters</button>
+                <button id="clearLogFiltersBtn" class="bg-gray-400 text-white px-3 py-2 rounded">Clear Filters</button>
+            </div>
+            <div class="transaction-log-list">
+                <ul id="logList">
+                    </ul>
+                <p id="noLogEntriesMessage" style="display: none; text-align: center; color: #6b7280;">No log entries found for the selected filters.</p>
+            </div>
+        </div>
+    </div>
+
 
     <script>
-        // Global state for user pop-up
-        let isEditingUserMode = false;
-        let currentRowBeingEdited = null; // Stores the <tr> element being edited
+        // --- DATA STORAGE AND INITIALIZATION ---
+        let usersData = []; 
+        let transactionLog = []; // Global array for all transactions/activities
 
-        // Get references to DOM elements
+        const LOCAL_STORAGE_USERS_KEY = 'usersApp_usersData';
+        const LOCAL_STORAGE_LOG_KEY = 'app_transactionLog'; // Separate key for the log
+
+        // Mock Current User for logging purposes (adjust as needed for testing roles)
+        const CURRENT_USER_ID = '001'; // Assuming Alice Smith is currently logged in
+        const CURRENT_USER_NAME = 'Alice Smith'; // Or dynamically set based on role
+
+        // --- Local Storage Functions for Users Data ---
+        function loadUsersFromLocalStorage() {
+            const storedData = localStorage.getItem(LOCAL_STORAGE_USERS_KEY);
+            if (storedData) {
+                usersData = JSON.parse(storedData);
+            } else {
+                usersData = [
+                    { id: '001', name: 'Alice Smith', email: 'alice@example.com', role: 'Admin', status: 'Active', donatesToChallenge: true, circlePayments: {} },
+                    { id: '002', name: 'Bob Johnson', email: 'bob@example.com', role: 'User', status: 'Inactive', donatesToChallenge: true, circlePayments: {} },
+                    { id: '003', name: 'Charlie Brown', email: 'charlie@example.com', role: 'Sponsored User', status: 'Active', donatesToChallenge: false, circlePayments: {} }, 
+                    { id: '004', name: 'David Miller', email: 'david@example.com', role: 'System Admin', status: 'Active', donatesToChallenge: true, circlePayments: {} },
+                    { id: '005', name: 'Emily White', email: 'emily@example.com', role: 'Private User', status: 'Active', donatesToChallenge: false, circlePayments: {'18': {isPaid: false, paymentDate: null}} } 
+                ];
+                saveUsersToLocalStorage(); 
+            }
+        }
+
+        function saveUsersToLocalStorage() {
+            localStorage.setItem(LOCAL_STORAGE_USERS_KEY, JSON.stringify(usersData));
+        }
+
+        // --- Local Storage Functions for Transaction Log (NEW) ---
+        function loadTransactionLogFromLocalStorage() {
+            const storedLog = localStorage.getItem(LOCAL_STORAGE_LOG_KEY);
+            if (storedLog) {
+                transactionLog = JSON.parse(storedLog);
+            } else {
+                transactionLog = []; // Empty log on first load
+            }
+        }
+
+        function saveTransactionLogToLocalStorage() {
+            localStorage.setItem(LOCAL_STORAGE_LOG_KEY, JSON.stringify(transactionLog));
+        }
+
+        // --- Helper to get the next sequential user ID ---
+        function getNextUserId() {
+            let maxId = 0;
+            if (usersData.length > 0) {
+                maxId = Math.max(...usersData.map(user => parseInt(user.id, 10)));
+            }
+            return (maxId + 1).toString().padStart(3, '0');
+        }
+
+        // --- Add Log Entry Function (NEW - IMPORTANT FOR BOTH PAGES) ---
+        function addLogEntry(type, description, details = {}) {
+            const now = new Date();
+            const timestamp = now.toISOString(); // ISO string for easy date comparison
+            const readableDate = now.toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' });
+            const readableTime = now.toLocaleTimeString('en-GB');
+
+            const entry = {
+                timestamp: timestamp,
+                date: readableDate,
+                time: readableTime,
+                type: type, // e.g., "User Created", "Circle Updated", "Payment Marked"
+                description: description,
+                actorId: CURRENT_USER_ID,
+                actorName: CURRENT_USER_NAME,
+                details: details // Any additional data relevant to the log
+            };
+            transactionLog.push(entry);
+            saveTransactionLogToLocalStorage();
+        }
+
+
+        // --- Get references to DOM elements ---
         const usersTableBody = document.getElementById('usersTableBody');
         const addUserButton = document.getElementById('addUserButton');
         const searchUserInput = document.getElementById('searchUser');
+        const viewTransactionLogBtn = document.getElementById('viewTransactionLogBtn'); // NEW
 
         // User Pop-up elements
         const userPopupContainer = document.getElementById('userPopupContainer');
@@ -715,14 +966,52 @@
         const submitUserButton = document.getElementById('submitUserButton');
         const userNameInput = document.getElementById('userName');
         const userEmailInput = document.getElementById('userEmail');
-        const userRoleInput = document.getElementById('userRole');
+        const userRoleSelect = document.getElementById('userRole'); 
         const userStatusInput = document.getElementById('userStatus');
+
+        // Private User specific elements
+        const privateUserOptions = document.getElementById('privateUserOptions');
+        const donatesToChallengeOptOut = document.getElementById('donatesToChallengeOptOut');
+        const circle18PaymentStatus = document.getElementById('circle18PaymentStatus');
+        const markCircle18PaidBtn = document.getElementById('markCircle18PaidBtn');
 
         // Confirmation Modal elements
         const confirmDeleteModal = document.getElementById('confirmDeleteModal');
         const confirmDeleteYesButton = document.getElementById('confirmDeleteYes');
         const confirmDeleteNoButton = document.getElementById('confirmDeleteNo');
-        let rowToDelete = null; // Stores the <tr> element to be deleted
+        let userIdToDelete = null; 
+
+        // Transaction Log Popup elements (NEW)
+        const transactionLogPopupContainer = document.getElementById('transactionLogPopupContainer');
+        const logFilterStartDate = document.getElementById('logFilterStartDate');
+        const logFilterEndDate = document.getElementById('logFilterEndDate');
+        const logFilterActivityType = document.getElementById('logFilterActivityType');
+        const applyLogFiltersBtn = document.getElementById('applyLogFiltersBtn');
+        const clearLogFiltersBtn = document.getElementById('clearLogFiltersBtn');
+        const logList = document.getElementById('logList');
+        const noLogEntriesMessage = document.getElementById('noLogEntriesMessage');
+
+
+        // --- Render Users Table ---
+        function renderUsersTable() {
+            usersTableBody.innerHTML = ''; 
+            usersData.forEach(user => {
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td>${user.id}</td>
+                    <td>${user.name}</td>
+                    <td>${user.email}</td>
+                    <td>${user.role}</td>
+                    <td>${user.status}</td>
+                    <td class="actions">
+                        <button class="edit-user-btn" data-user-id="${user.id}">Edit</button>
+                        <button class="delete-user-btn" data-user-id="${user.id}">Delete</button>
+                    </td>
+                `;
+                usersTableBody.appendChild(newRow);
+            });
+            saveUsersToLocalStorage(); 
+        }
 
 
         // --- User Pop-up Control Functions ---
@@ -732,9 +1021,8 @@
 
         function closeUserPopup() {
             userPopupContainer.style.display = 'none';
-            // Reset form fields
             userForm.reset();
-            // Reset pop-up state
+            privateUserOptions.style.display = 'none';
             isEditingUserMode = false;
             currentRowBeingEdited = null;
             userPopupTitle.textContent = 'Add New User';
@@ -746,94 +1034,182 @@
             isEditingUserMode = false;
             userPopupTitle.textContent = 'Add New User';
             submitUserButton.textContent = 'Add User';
-            closeUserPopup(); // Ensure form is reset before opening
+            closeUserPopup(); 
             openUserPopup();
         });
 
-        function createNewUserRow(name, email, role, status) {
-            const currentRows = usersTableBody.getElementsByTagName('tr').length;
-            const newUserId = (currentRows + 1).toString().padStart(3, '0'); // e.g., 003, 004
-
-            const newRow = document.createElement('tr');
-            newRow.innerHTML = `
-                <td>${newUserId}</td>
-                <td>${name}</td>
-                <td>${email}</td>
-                <td>${role}</td>
-                <td>${status}</td>
-                <td class="actions">
-                    <button class="edit-user-btn">Edit</button>
-                    <button class="delete-user-btn">Delete</button>
-                </td>
-            `;
-            usersTableBody.appendChild(newRow);
+        function createNewUser(name, email, role, status, donatesToChallenge, circlePayments) {
+            const newUser = {
+                id: getNextUserId(),
+                name: name,
+                email: email,
+                role: role,
+                status: status,
+                donatesToChallenge: donatesToChallenge,
+                circlePayments: circlePayments
+            };
+            usersData.push(newUser);
+            renderUsersTable(); 
             alert('New user added successfully!');
+            addLogEntry("User Created", `User ${name} (ID: ${newUser.id}) with role '${role}' was created.`, { userId: newUser.id, userName: name, role: role });
         }
 
         // --- Edit User Logic ---
-        function openEditUserPopup(row) {
+        function openEditUserPopup(userId) {
             isEditingUserMode = true;
-            currentRowBeingEdited = row;
-            userPopupTitle.textContent = 'Edit User';
+            const userToEdit = usersData.find(user => user.id === userId);
+            currentRowBeingEdited = usersTableBody.querySelector(`button[data-user-id="${userId}"]`).closest('tr');
+
+            if (!userToEdit) {
+                alert('User not found for editing.');
+                return;
+            }
+
+            userPopupTitle.textContent = `Edit User (${userToEdit.id})`;
             submitUserButton.textContent = 'Save Changes';
 
-            const cells = row.querySelectorAll('td');
-            userNameInput.value = cells[1].textContent;
-            userEmailInput.value = cells[2].textContent;
-            userRoleInput.value = cells[3].textContent;
-            userStatusInput.value = cells[4].textContent;
+            userNameInput.value = userToEdit.name;
+            userEmailInput.value = userToEdit.email;
+            userRoleSelect.value = userToEdit.role;
+            userStatusInput.value = userToEdit.status;
+
+            // Handle Private User specific options
+            if (userToEdit.role === 'Private User') {
+                privateUserOptions.style.display = 'block';
+                donatesToChallengeOptOut.checked = !userToEdit.donatesToChallenge; 
+                
+                const paymentStatus = userToEdit.circlePayments['18']?.isPaid ? 'Paid' : 'Not Paid';
+                circle18PaymentStatus.textContent = paymentStatus;
+                markCircle18PaidBtn.textContent = userToEdit.circlePayments['18']?.isPaid ? 'Mark Not Paid' : 'Mark Payment for Circle #18';
+            } else {
+                privateUserOptions.style.display = 'none';
+            }
 
             openUserPopup();
         }
 
-        function updateExistingUserRow(name, email, role, status) {
-            if (!currentRowBeingEdited) return; // Should not happen
+        function updateExistingUser(name, email, role, status, donatesToChallenge, circlePayments) {
+            if (!currentRowBeingEdited) return; 
 
-            const cells = currentRowBeingEdited.querySelectorAll('td');
-            cells[1].textContent = name;
-            cells[2].textContent = email;
-            cells[3].textContent = role;
-            cells[4].textContent = status;
-            alert('User updated successfully!');
+            const userId = currentRowBeingEdited.querySelector('td').textContent; 
+            const userIndex = usersData.findIndex(user => user.id === userId);
+
+            if (userIndex !== -1) {
+                const oldUser = { ...usersData[userIndex] }; // Copy for logging changes
+                usersData[userIndex].name = name;
+                usersData[userIndex].email = email;
+                usersData[userIndex].role = role;
+                usersData[userIndex].status = status;
+                usersData[userIndex].donatesToChallenge = donatesToChallenge;
+                usersData[userIndex].circlePayments = circlePayments; 
+
+                renderUsersTable(); 
+                alert('User updated successfully!');
+                
+                // Detailed logging for user update
+                let changes = [];
+                if (oldUser.name !== name) changes.push(`Name: '${oldUser.name}' -> '${name}'`);
+                if (oldUser.email !== email) changes.push(`Email: '${oldUser.email}' -> '${email}'`);
+                if (oldUser.role !== role) changes.push(`Role: '${oldUser.role}' -> '${role}'`);
+                if (oldUser.status !== status) changes.push(`Status: '${oldUser.status}' -> '${status}'`);
+                if (oldUser.donatesToChallenge !== donatesToChallenge) changes.push(`Donation Challenge Opt-out: '${!oldUser.donatesToChallenge}' -> '${!donatesToChallenge}'`);
+
+                addLogEntry("User Updated", `User ${name} (ID: ${userId}) was updated. Changes: ${changes.join(', ')}`, { userId: userId, changes: changes });
+            }
         }
+
+        // Listener for Role select change (to show/hide private user options)
+        userRoleSelect.addEventListener('change', () => {
+            if (userRoleSelect.value === 'Private User') {
+                privateUserOptions.style.display = 'block';
+                donatesToChallengeOptOut.checked = true; // Default to opting out
+                circle18PaymentStatus.textContent = 'Not Paid';
+                markCircle18PaidBtn.textContent = 'Mark Payment for Circle #18';
+            } else {
+                privateUserOptions.style.display = 'none';
+            }
+        });
+
+        // Event listener for Mark Payment button (for Circle #18)
+        markCircle18PaidBtn.addEventListener('click', () => {
+            const userId = currentRowBeingEdited.querySelector('td').textContent;
+            const user = usersData.find(u => u.id === userId);
+
+            if (user && user.role === 'Private User') {
+                const currentStatus = user.circlePayments['18']?.isPaid;
+                const newStatus = !currentStatus;
+                user.circlePayments['18'] = {
+                    isPaid: newStatus,
+                    paymentDate: newStatus ? new Date().toISOString() : null
+                };
+                circle18PaymentStatus.textContent = newStatus ? 'Paid' : 'Not Paid';
+                markCircle18PaidBtn.textContent = newStatus ? 'Mark Not Paid' : 'Mark Payment for Circle #18';
+                
+                alert(`Payment status for Circle #18 updated to: ${newStatus ? 'Paid' : 'Not Paid'}`);
+                saveUsersToLocalStorage(); 
+                addLogEntry("Circle Payment Marked", `Payment for Circle #18 marked as '${newStatus ? 'Paid' : 'Not Paid'}' for Private User ${user.name} (ID: ${user.id}).`, { userId: user.id, circleId: '18', paymentStatus: newStatus });
+            }
+        });
+
 
         // --- Handle User Form Submission (Add or Edit) ---
         userForm.addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent default form submission
+            event.preventDefault(); 
 
             const name = userNameInput.value.trim();
             const email = userEmailInput.value.trim();
-            const role = userRoleInput.value.trim();
+            const role = userRoleSelect.value;
             const status = userStatusInput.value.trim();
 
-            if (!name || !email || !role || !status) {
-                alert('Please fill in all fields.');
-                return;
+            let donatesToChallenge = true; 
+            let circlePayments = {};
+
+            if (role === 'Private User') {
+                donatesToChallenge = !donatesToChallengeOptOut.checked; 
+                circlePayments = { // Initialize for sample circle 18
+                    '18': { isPaid: false, paymentDate: null }
+                };
+            } else if (role === 'Sponsored User') {
+                donatesToChallenge = false; 
             }
 
             if (isEditingUserMode) {
-                updateExistingUserRow(name, email, role, status);
+                const userId = currentRowBeingEdited.querySelector('td').textContent;
+                const existingUser = usersData.find(u => u.id === userId);
+                if (existingUser) {
+                    circlePayments = existingUser.circlePayments; // Preserve existing
+                    if (role === 'Private User' && !circlePayments['18']) {
+                        circlePayments['18'] = {isPaid: false, paymentDate: null};
+                    }
+                }
+                updateExistingUser(name, email, role, status, donatesToChallenge, circlePayments);
             } else {
-                createNewUserRow(name, email, role, status);
+                createNewUser(name, email, role, status, donatesToChallenge, circlePayments);
             }
             closeUserPopup();
         });
 
         // --- Delete User Logic (with Confirmation Modal) ---
-        function showConfirmDeleteModal(row) {
-            rowToDelete = row;
+        function showConfirmDeleteModal(id) {
+            userIdToDelete = id; 
             confirmDeleteModal.style.display = 'flex';
         }
 
         function hideConfirmDeleteModal() {
             confirmDeleteModal.style.display = 'none';
-            rowToDelete = null;
+            userIdToDelete = null;
         }
 
         confirmDeleteYesButton.addEventListener('click', () => {
-            if (rowToDelete) {
-                rowToDelete.remove();
-                alert('User deleted successfully!');
+            if (userIdToDelete) {
+                const userIndex = usersData.findIndex(user => user.id === userIdToDelete);
+                if (userIndex !== -1) {
+                    const deletedUser = usersData[userIndex]; // Get user for logging
+                    usersData.splice(userIndex, 1); 
+                    renderUsersTable(); 
+                    alert('User deleted successfully!');
+                    addLogEntry("User Deleted", `User ${deletedUser.name} (ID: ${deletedUser.id}) with role '${deletedUser.role}' was deleted.`, { userId: deletedUser.id, userName: deletedUser.name });
+                }
             }
             hideConfirmDeleteModal();
         });
@@ -846,16 +1222,15 @@
         // --- Event Delegation for Edit and Delete Buttons in Table ---
         usersTableBody.addEventListener('click', function(event) {
             const target = event.target;
+            const userId = target.dataset.userId; 
 
             if (target.classList.contains('edit-user-btn')) {
-                const rowToEdit = target.closest('tr');
-                if (rowToEdit) {
-                    openEditUserPopup(rowToEdit);
+                if (userId) {
+                    openEditUserPopup(userId); 
                 }
             } else if (target.classList.contains('delete-user-btn')) {
-                const row = target.closest('tr');
-                if (row) {
-                    showConfirmDeleteModal(row);
+                if (userId) {
+                    showConfirmDeleteModal(userId); 
                 }
             }
         });
@@ -869,12 +1244,88 @@
                 const row = rows[i];
                 const rowText = row.textContent.toLowerCase();
                 if (rowText.includes(query)) {
-                    row.style.display = ''; // Show row
+                    row.style.display = ''; 
                 } else {
-                    row.style.display = 'none'; // Hide row
+                    row.style.display = 'none'; 
                 }
             }
         });
+
+        // --- Transaction Log Popup Logic (NEW) ---
+
+        viewTransactionLogBtn.addEventListener('click', () => {
+            openTransactionLogPopup();
+        });
+
+        function openTransactionLogPopup() {
+            transactionLogPopupContainer.style.display = 'flex';
+            renderTransactionLog(); // Render all logs on open
+        }
+
+        function closeTransactionLogPopup() {
+            transactionLogPopupContainer.style.display = 'none';
+            // Clear filters when closing
+            logFilterStartDate.value = '';
+            logFilterEndDate.value = '';
+            logFilterActivityType.value = '';
+        }
+
+        applyLogFiltersBtn.addEventListener('click', () => {
+            renderTransactionLog(); // Apply filters by re-rendering
+        });
+
+        clearLogFiltersBtn.addEventListener('click', () => {
+            logFilterStartDate.value = '';
+            logFilterEndDate.value = '';
+            logFilterActivityType.value = '';
+            renderTransactionLog(); // Clear filters and re-render
+        });
+
+        function renderTransactionLog() {
+            logList.innerHTML = ''; // Clear existing log entries
+            let filteredLog = [...transactionLog].reverse(); // Get a copy and reverse for newest first
+
+            const startDate = logFilterStartDate.value ? new Date(logFilterStartDate.value) : null;
+            const endDate = logFilterEndDate.value ? new Date(logFilterEndDate.value) : null;
+            const activityType = logFilterActivityType.value;
+
+            if (startDate) {
+                // Set time to start of day for accurate comparison
+                startDate.setHours(0, 0, 0, 0); 
+            }
+            if (endDate) {
+                // Set time to end of day for accurate comparison
+                endDate.setHours(23, 59, 59, 999);
+            }
+
+            filteredLog = filteredLog.filter(entry => {
+                const entryDate = new Date(entry.timestamp);
+
+                // Filter by date range
+                if (startDate && entryDate < startDate) return false;
+                if (endDate && entryDate > endDate) return false;
+
+                // Filter by activity type
+                if (activityType && entry.type !== activityType) return false;
+
+                return true;
+            });
+
+            if (filteredLog.length === 0) {
+                noLogEntriesMessage.style.display = 'block';
+            } else {
+                noLogEntriesMessage.style.display = 'none';
+                filteredLog.forEach(entry => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `
+                        <strong>[${entry.date} ${entry.time}]</strong> 
+                        <span class="text-blue-700 font-semibold">${entry.type}</span> by ${entry.actorName} (ID: ${entry.actorId})<br>
+                        ${entry.description}
+                    `;
+                    logList.appendChild(listItem);
+                });
+            }
+        }
 
 
         // --- Other existing functionalities (Profile Dropdown, Notification Bell, Inbox Icon) ---
@@ -882,24 +1333,38 @@
         // Notification Bell functionality
         const notificationBellAnchor = document.getElementById('notificationBellAnchor');
         const notificationCount = document.getElementById('notificationCount');
-        const messageCount = document.getElementById('messageCount'); // Get the message count element
+        const messageCount = document.getElementById('messageCount'); 
 
-        // Function to generate a random number for testing
         function getRandomInt(min, max) {
             min = Math.ceil(min);
             max = Math.floor(max);
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
 
-        // Set random counts on page load for testing
         document.addEventListener('DOMContentLoaded', () => {
+            loadUsersFromLocalStorage(); // Load users data
+            loadTransactionLogFromLocalStorage(); // Load log data
+            renderUsersTable(); // Initial render of users table
+
+            // Initial log entries if starting fresh (for demo purposes)
+            if (transactionLog.length === 0) {
+                addLogEntry("System Init", "Application initialized.", { currentPage: 'users.html' });
+                addLogEntry("User Created", "Sample user Alice Smith (ID: 001) with role 'Admin' was pre-created.", { userId: '001', userName: 'Alice Smith', role: 'Admin' });
+                addLogEntry("User Created", "Sample user Bob Johnson (ID: 002) with role 'User' was pre-created.", { userId: '002', userName: 'Bob Johnson', role: 'User' });
+                addLogEntry("User Created", "Sample user Charlie Brown (ID: 003) with role 'Sponsored User' was pre-created.", { userId: '003', userName: 'Charlie Brown', role: 'Sponsored User' });
+                addLogEntry("User Created", "Sample user David Miller (ID: 004) with role 'System Admin' was pre-created.", { userId: '004', userName: 'David Miller', role: 'System Admin' });
+                addLogEntry("User Created", "Sample user Emily White (ID: 005) with role 'Private User' was pre-created.", { userId: '005', userName: 'Emily White', role: 'Private User' });
+                saveTransactionLogToLocalStorage(); // Save these initial logs
+            }
+
+
             if (messageCount) {
-                const randomMessages = getRandomInt(1, 9); // Between 1 and 9
+                const randomMessages = getRandomInt(1, 9); 
                 messageCount.textContent = randomMessages;
                 messageCount.style.display = randomMessages > 0 ? 'flex' : 'none'; 
             }
             if (notificationCount) {
-                const randomNotifications = getRandomInt(0, 9); // Between 0 and 9
+                const randomNotifications = getRandomInt(0, 9); 
                 notificationCount.textContent = randomNotifications;
                 notificationCount.style.display = randomNotifications > 0 ? 'flex' : 'none'; 
             }
@@ -945,10 +1410,12 @@
 
         inviteCirclesButton.addEventListener('click', () => {
             alert('Initiating invitation process for users IN circles.');
+            addLogEntry("Invitation Initiated", "Invitation process initiated for users in circles.", { type: "In Circles" });
         });
 
         inviteWithoutCirclesButton.addEventListener('click', () => {
             alert('Initiating invitation process for users WITHOUT circles.');
+            addLogEntry("Invitation Initiated", "Invitation process initiated for users without circles.", { type: "Without Circles" });
         });
     </script>
 </body>

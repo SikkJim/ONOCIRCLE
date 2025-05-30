@@ -104,7 +104,6 @@
             text-decoration: none;
             font-weight: 600;
             font-size: 1rem;
-            font-style: italic;
         }
 
         .sidebar ul li.active a {
@@ -271,7 +270,6 @@
 
         .no-messages {
             color: #6b7280;
-            font-style: italic;
             text-align: center;
             padding: 1.5rem; /* Increased padding */
             background-color: #f9fafb; /* Light background for consistency */
@@ -338,6 +336,12 @@
 </head>
 <body>
     <div class="sidebar">
+        <div class="sidebar-logo mb-8 mt-2 text-center">
+            <a href="dashboard.html">
+                <img src="Images/logo.png" alt="UNOCIRCLE Logo" class="h-12 w-auto mx-auto object-contain">
+            </a>
+        </div>
+
         <ul>
             <li><a href="dashboard.html"><i class="icon">🏁</i><span>Dashboard</span></a></li>
             <li><a href="users.html"><i class="icon">👤</i><span>Users</span></a></li>
@@ -346,7 +350,7 @@
             <li><a href="payments.html"><i class="icon">💵</i><span>Payments</span></a></li>
             <li><a href="admin_users.html"><i class="icon">👑</i><span>Admin</span></a></li>
         </ul>
-        
+
         <ul class="sidebar-bottom-nav">
             <li class="active">
                 <a href="messages.html" id="inboxIconContainer">

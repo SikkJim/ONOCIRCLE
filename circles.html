@@ -104,7 +104,6 @@
             text-decoration: none;
             font-weight: 600;
             font-size: 1rem;
-            font-style: italic;
         }
 
         .sidebar ul li.active a {
@@ -264,6 +263,14 @@
             cursor: pointer;
             margin-right: 0.25rem;
         }
+        /* Style for a 'Success' looking button */
+        .manage-btn.success { /* Keep definition if class is still used elsewhere for status display */
+            background-color: #10B981; /* Tailwind green-500 */
+        }
+        .manage-btn.success:hover {
+            background-color: #059669; /* Tailwind green-600 */
+        }
+
 
         .edit-btn:hover, .copy-btn:hover {
             background-color: #2563eb; /* Tailwind blue-700 */
@@ -289,9 +296,11 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             padding: 25px;
             width: 90%;
-            max-width: 700px;
+            max-width: 800px; /* Slightly wider to accommodate new section */
             position: relative;
             animation: fadeIn 0.3s ease-out;
+            max-height: 90vh; /* Limit height */
+            overflow-y: auto; /* Allow scrolling */
         }
 
         @keyframes fadeIn {
@@ -432,6 +441,140 @@
             background-color: #d1d5db;
         }
 
+        /* Styles for sponsored users section */
+        .sponsored-users-section {
+            border-top: 1px solid #e5e7eb;
+            margin-top: 20px;
+            padding-top: 20px;
+        }
+
+        .sponsored-users-section h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 15px;
+        }
+
+        .sponsored-users-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 250px; /* Increased height for history */
+            overflow-y: auto;
+            border: 1px solid #d1d5db;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: #f9fafb;
+        }
+
+        .sponsored-user-item {
+            display: flex;
+            flex-direction: column; /* Changed to column for better layout with history */
+            /* justify-content: space-between; Removed as now column flex */
+            align-items: flex-start; /* Align left */
+            padding: 8px 12px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            font-size: 0.9rem;
+            color: #4b5563;
+        }
+        .sponsored-user-item .main-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 5px; /* Space between main info and progress details */
+        }
+        .sponsored-user-item .progress-info {
+            flex-grow: 1;
+            padding-right: 10px; /* Space from buttons */
+        }
+        .sponsored-user-item .progress-buttons {
+            display: flex; /* Ensure buttons are in a row */
+            flex-shrink: 0; /* Don't shrink buttons */
+        }
+        .sponsored-user-item .progress-buttons button {
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            margin-left: 5px;
+            min-width: 80px; /* Ensure buttons have consistent width */
+        }
+        /* Specific colors for completion/invite buttons */
+        .btn-complete { background-color: #22c55e; color: white; } /* green-500 */
+        .btn-complete:hover { background-color: #16a34a; } /* green-600 */
+        .btn-invite { background-color: #6366f1; color: white; } /* indigo-500 */
+        .btn-invite:hover { background-color: #4f46e5; } /* indigo-600 */
+        .btn-history-toggle {
+            background-color: #a1a1aa; /* gray-400 */
+            color: white;
+            padding: 2px 6px;
+            font-size: 0.7em;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .btn-history-toggle:hover {
+            background-color: #71717a; /* gray-600 */
+        }
+
+
+        /* Styles for adding a sponsored user to the circle */
+        .add-sponsored-user-control {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #e5e7eb;
+        }
+        .add-sponsored-user-control select {
+            flex-grow: 1;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 5px;
+        }
+        .add-sponsored-user-control button {
+            background-color: #2563eb; /* blue-700 */
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .add-sponsored-user-control button:hover {
+            background-color: #1e40af; /* blue-900 */
+        }
+
+        /* History section styles */
+        .history-section {
+            width: 100%;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed #e5e7eb;
+            font-size: 0.8em;
+            color: #6b7280;
+            display: none; /* Hidden by default */
+        }
+        .history-section h5 {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .history-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .history-section li {
+            background-color: #f3f4f6;
+            padding: 5px 8px;
+            border-radius: 3px;
+            margin-bottom: 3px;
+            border: 1px solid #e5e7eb;
+        }
+        .history-section li:last-child {
+            margin-bottom: 0;
+        }
+
         /* Responsive adjustments */
         @media (max-width: 768px) {
             /* Adjustments for fixed sidebar on small screens */
@@ -481,11 +624,35 @@
             .dashboard-panel {
                 padding: 1.5rem;
             }
+
+            .add-circle-popup {
+                max-width: 95%; /* Adjust for very small screens */
+            }
+            .add-circle-popup .form-group {
+                flex: 1 1 100%; /* Stack form groups vertically */
+                min-width: auto;
+            }
+            .sponsored-user-item {
+                flex-direction: column; /* Stack items vertically */
+                align-items: flex-start;
+                gap: 5px;
+            }
+            .sponsored-user-item .progress-buttons {
+                width: 100%; /* Full width buttons */
+                display: flex;
+                justify-content: flex-end;
+            }
         }
     </style>
 </head>
 <body>
     <div class="sidebar">
+        <div class="sidebar-logo mb-8 mt-2 text-center">
+            <a href="dashboard.html">
+                <img src="Images/logo.png" alt="UNOCIRCLE Logo" class="h-12 w-auto mx-auto object-contain">
+            </a>
+        </div>
+
         <ul>
             <li><a href="dashboard.html"><i class="icon">🏁</i><span>Dashboard</span></a></li>
             <li><a href="users.html"><i class="icon">👤</i><span>Users</span></a></li>
@@ -541,27 +708,12 @@
                         <th class="px-4 py-3">Fee</th>
                         <th class="px-4 py-3">Start Date</th>
                         <th class="px-4 py-3">End Date</th>
-                        <th class="px-4 py-3">Participants</th>
+                        <th class="px-4 py-3">Reserve Period</th>
+                        <th class="px-4 py-3">Assigned Members</th>
                     </tr>
                 </thead>
                 <tbody id="circlesTableBody">
-                    <tr class="border-b hover:bg-gray-50">
-                        <td class="px-4 py-3 flex space-x-2">
-                            <button class="edit-btn" title="Edit">✏️</button>
-                            <button class="copy-btn" title="Copy">📋</button>
-                        </td>
-                        <td class="px-4 py-3">18</td>
-                        <td class="px-4 py-3">
-                            <span class="text-green-700 bg-green-100 px-2 py-1 rounded-full text-xs font-medium">active</span>
-                        </td>
-                        <td class="px-4 py-3">£100</td>
-                        <td class="px-4 py-3">10</td>
-                        <td class="px-4 py-3">£5</td>
-                        <td class="px-4 py-3">Apr 2025</td>
-                        <td class="px-4 py-3">Jan 2026</td>
-                        <td class="px-4 py-3">—</td>
-                    </tr>
-                </tbody>
+                    </tbody>
             </table>
         </div>
     </main>
@@ -592,7 +744,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="participantsMonths">Participants/Months</label>
+                    <label for="participantsMonths">Period (Months/Participants)*</label>
                     <div class="input-wrapper">
                         <i class="input-icon">👤</i>
                         <input type="text" id="participantsMonths" name="participantsMonths" placeholder="10" value="10" onkeyup="calculateAmount()" onchange="calculateAmount()">
@@ -626,7 +778,14 @@
                     <label for="reservePeriod">Reserve Period*</label>
                     <div class="input-wrapper">
                         <i class="input-icon">0</i>
-                        <input type="text" id="reservePeriod" name="reservePeriod" placeholder="0">
+                        <input type="text" id="reservePeriod" name="reservePeriod" placeholder="0" value="0">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="assignedMembers">Initial Assigned Members*</label>
+                    <div class="input-wrapper">
+                        <i class="input-icon">👥</i>
+                        <input type="number" id="assignedMembers" name="assignedMembers" placeholder="0" value="0" min="0">
                     </div>
                 </div>
             </div>
@@ -635,6 +794,18 @@
                 Amount: <span id="calculatedAmount">£100 x 10 = £1000</span>
             </div>
 
+            <div class="sponsored-users-section" id="sponsoredUsersSection">
+                <h4>Sponsored Users in this Circle:</h4>
+                <div class="sponsored-users-list" id="sponsoredUsersList">
+                    <p class="text-gray-500 text-sm">No sponsored users assigned yet.</p>
+                </div>
+                <div class="add-sponsored-user-control">
+                    <select id="availableSponsoredUsersSelect">
+                        <option value="">Select Sponsored User to Add</option>
+                        </select>
+                    <button id="addSponsoredUserToCircleBtn">Add to Circle</button>
+                </div>
+            </div>
             <div class="popup-buttons">
                 <button class="submit-btn" id="submitCircleButton">SUBMIT</button>
                 <button class="close-btn-bottom" onclick="closeCirclePopup()">CLOSE</button>
@@ -643,11 +814,153 @@
     </div>
 
     <script>
+        // --- DATA STORAGE AND INITIALIZATION ---
+        // Mock User Data (from users.html context, ideally fetched or shared)
+        // This is crucial for linking sponsored users to circles
+        const MOCK_USERS_DATA = [
+            { id: '001', name: 'Alice Smith', email: 'alice@example.com', role: 'Admin', status: 'Active' },
+            { id: '002', name: 'Bob Johnson', email: 'bob@example.com', role: 'User', status: 'Inactive' },
+            { id: '003', name: 'Charlie Brown', email: 'charlie@example.com', role: 'Sponsored User', status: 'Active' },
+            { id: '004', name: 'Diana Prince', email: 'diana@example.com', role: 'User', status: 'Active' },
+            { id: '005', name: 'Eve Adams', email: 'eve@example.com', role: 'Sponsored User', status: 'Inactive' },
+            { id: '006', name: 'Frank White', email: 'frank@example.com', role: 'System Admin', status: 'Active' },
+            { id: '007', name: 'Grace Lee', email: 'grace@example.com', role: 'Private User', status: 'Active' } // Added Grace Lee as a Private User for cross-page testing
+        ];
+
         // Global state for edit mode
         let isEditingMode = false;
-        let currentRowBeingEdited = null;
+        let currentCircleBeingEdited = null; // Stores the actual circle object being edited
+        let nextCircleId = 1; // Used for new circles
+        
+        // Main data array for circles
+        let circlesData = []; 
 
-        // Get references to popup elements
+        const LOCAL_STORAGE_KEY = 'circlesApp_circlesData';
+
+        // --- Financial Constants ---
+        const DONATION_PERCENTAGE_OF_MONTHLY_INVESTMENT = 0.10; // 10% of monthly investment per completion
+        const LOCKED_SAVINGS_PERCENTAGE = 0.20; // 20% of net gifted amount (after donation)
+
+        // --- NEW: Transaction Log Data and Persistence (Must match users.html for shared log) ---
+        let transactionLog = []; // Global array for all transactions/activities
+        const LOCAL_STORAGE_LOG_KEY = 'app_transactionLog'; // Separate key for the log
+
+        // Mock Current User for logging purposes (adjust as needed for testing roles)
+        const CURRENT_USER_ID = '001'; // Assuming Alice Smith is currently logged in
+        const CURRENT_USER_NAME = 'Alice Smith'; // Or dynamically set based on role
+
+        function loadTransactionLogFromLocalStorage() {
+            const storedLog = localStorage.getItem(LOCAL_STORAGE_LOG_KEY);
+            if (storedLog) {
+                transactionLog = JSON.parse(storedLog);
+            } else {
+                transactionLog = []; // Empty log on first load
+            }
+        }
+
+        function saveTransactionLogToLocalStorage() {
+            localStorage.setItem(LOCAL_STORAGE_LOG_KEY, JSON.stringify(transactionLog));
+        }
+
+        // Add Log Entry Function (Copied from users.html)
+        function addLogEntry(type, description, details = {}) {
+            const now = new Date();
+            const timestamp = now.toISOString(); // ISO string for easy date comparison
+            const readableDate = now.toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' });
+            const readableTime = now.toLocaleTimeString('en-GB');
+
+            const entry = {
+                timestamp: timestamp,
+                date: readableDate,
+                time: readableTime,
+                type: type, // e.g., "User Created", "Circle Updated", "Payment Marked"
+                description: description,
+                actorId: CURRENT_USER_ID,
+                actorName: CURRENT_USER_NAME,
+                details: details // Any additional data relevant to the log
+            };
+            transactionLog.push(entry);
+            saveTransactionLogToLocalStorage();
+        }
+        // --- END NEW TRANSACTION LOG FUNCTIONS ---
+
+
+        // --- Local Storage Functions for Circles Data ---
+        function loadCirclesFromLocalStorage() {
+            const storedData = localStorage.getItem(LOCAL_STORAGE_KEY);
+            if (storedData) {
+                circlesData = JSON.parse(storedData);
+            } else {
+                // Initial sample data if nothing in local storage
+                circlesData = [
+                    {
+                        id: 18,
+                        circleName: 'Initial Circle',
+                        monthlyInvestment: 100,
+                        participantsMonths: 10,
+                        fee: 5,
+                        startingDate: 'Apr 2025',
+                        endingDate: 'Jan 2026',
+                        reservePeriod: 0,
+                        assignedMembersCount: 8,
+                        status: 'active',
+                        sponsoredUsers: [
+                            { 
+                                userId: '003', 
+                                name: 'Charlie Brown', 
+                                completions: 3, 
+                                invitesCompleted: 1, 
+                                requiredInvites: 2, 
+                                notifiedCompletions: false, 
+                                notifiedInvites: false,
+                                totalGiftedAmount: 0, // Initialize
+                                totalDonationDeducted: 0, // Initialize
+                                totalLockedSavings: 0, // Initialize
+                                totalCurrentAccount: 0, // Initialize
+                                transactionHistory: [] // Initialize history
+                            }
+                        ]
+                    }
+                ];
+                // For the initial sample data, calculate the financial state
+                // This is a one-time calculation for demo purposes on first load
+                // In a real system, these would be persisted from previous transactions
+                circlesData.forEach(circle => {
+                    circle.sponsoredUsers.forEach(sponsoredUser => {
+                        // Re-calculate based on current completions for demo purposes
+                        // This assumes past completions are being 'processed' now.
+                        const tempCompletions = sponsoredUser.completions;
+                        sponsoredUser.completions = 0; // Reset to 0 before re-processing
+                        sponsoredUser.totalGiftedAmount = 0; // Reset totals
+                        sponsoredUser.totalDonationDeducted = 0;
+                        sponsoredUser.totalLockedSavings = 0;
+                        sponsoredUser.totalCurrentAccount = 0;
+                        sponsoredUser.transactionHistory = []; // Clear history
+                        for (let i = 0; i < tempCompletions; i++) {
+                            sponsoredUser.completions = i + 1; 
+                            processCompletionFinancials(circle.id, sponsoredUser.userId, true); // Don't notify on initial load
+                        }
+                        sponsoredUser.completions = tempCompletions; // Set back to original
+                    });
+                });
+                saveCirclesToLocalStorage(); // Save initial data
+            }
+        }
+
+        function saveCirclesToLocalStorage() {
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(circlesData));
+        }
+
+        // --- Helper to initialize the nextCircleId from existing circles ---
+        function initializeNextCircleId() {
+            let maxId = 0;
+            if (circlesData.length > 0) {
+                maxId = Math.max(...circlesData.map(circle => circle.id));
+            }
+            nextCircleId = maxId + 1;
+        }
+
+        // --- Get references to DOM elements ---
         const addCircleButton = document.getElementById('addCircleButton');
         const addCirclePopupContainer = document.getElementById('addCirclePopupContainer');
         const circlePopupTitle = document.getElementById('circlePopupTitle');
@@ -661,16 +974,25 @@
         const startingDateInput = document.getElementById('startingDate');
         const endingDateInput = document.getElementById('endingDate');
         const reservePeriodInput = document.getElementById('reservePeriod');
+        const assignedMembersInput = document.getElementById('assignedMembers');
         const calculatedAmountSpan = document.getElementById('calculatedAmount');
 
         // Table body for adding/editing rows
         const circlesTableBody = document.getElementById("circlesTableBody");
+
+        // Sponsored Users Section in Popup
+        const sponsoredUsersSection = document.getElementById('sponsoredUsersSection');
+        const sponsoredUsersList = document.getElementById('sponsoredUsersList');
+        const availableSponsoredUsersSelect = document.getElementById('availableSponsoredUsersSelect');
+        const addSponsoredUserToCircleBtn = document.getElementById('addSponsoredUserToCircleBtn');
 
 
         // --- General Popup Control ---
         function openCirclePopup() {
             addCirclePopupContainer.style.display = 'flex';
             calculateAmount();
+            // Show/hide sponsored users section based on edit mode
+            sponsoredUsersSection.style.display = isEditingMode ? 'block' : 'none';
         }
 
         function closeCirclePopup() {
@@ -682,111 +1004,181 @@
             feeInput.value = '';
             startingDateInput.value = '';
             endingDateInput.value = '';
-            reservePeriodInput.value = '';
-            calculateAmount(); // Recalculate to show default values
+            reservePeriodInput.value = '0';
+            assignedMembersInput.value = '0';
+            calculatedAmountSpan.textContent = ''; // Clear calculated amount on close
             
+            // Clear sponsored users list in popup
+            sponsoredUsersList.innerHTML = '<p class="text-gray-500 text-sm">No sponsored users assigned yet.</p>';
+            availableSponsoredUsersSelect.innerHTML = '<option value="">Select Sponsored User to Add</option>';
+
+
             isEditingMode = false;
-            currentRowBeingEdited = null;
+            currentCircleBeingEdited = null;
             circlePopupTitle.textContent = 'Add New Circle';
             submitCircleButton.textContent = 'SUBMIT';
         }
 
-        // --- Add New Circle specific logic ---
+        // --- Render Main Circles Table ---
+        function renderCirclesTable() {
+            circlesTableBody.innerHTML = ''; // Clear existing rows
+            circlesData.forEach(circle => {
+                const newRow = document.createElement('tr');
+                newRow.classList.add('border-b', 'hover:bg-gray-50');
+
+                // Get count of sponsored users assigned to this circle who have met requirements
+                const completedSponsoredUsers = circle.sponsoredUsers ? 
+                    circle.sponsoredUsers.filter(su => su.completions >= 5 && su.invitesCompleted >= su.requiredInvites).length : 0;
+                
+                const sponsoredUsersCount = circle.sponsoredUsers ? circle.sponsoredUsers.length : 0;
+                
+                // Add a class for styling if all sponsored users completed (optional)
+                const rowStatusClass = completedSponsoredUsers === sponsoredUsersCount && sponsoredUsersCount > 0 ? 'bg-green-50' : ''; // Light green if all complete
+
+                newRow.innerHTML = `
+                    <td class="px-4 py-3 flex space-x-2">
+                        <button class="edit-btn" title="Edit" data-circle-id="${circle.id}">✏️</button>
+                        <button class="copy-btn" title="Copy" data-circle-id="${circle.id}">📋</button>
+                    </td>
+                    <td class="px-4 py-3">${circle.id}</td>
+                    <td class="px-4 py-3">
+                        <span class="text-green-700 bg-green-100 px-2 py-1 rounded-full text-xs font-medium">${circle.status}</span>
+                    </td>
+                    <td class="px-4 py-3">£${circle.monthlyInvestment}</td>
+                    <td class="px-4 py-3">${circle.participantsMonths}</td>
+                    <td class="px-4 py-3">£${circle.fee}</td>
+                    <td class="px-4 py-3">${circle.startingDate}</td>
+                    <td class="px-4 py-3">${circle.endingDate || 'N/A'}</td>
+                    <td class="px-4 py-3">${circle.reservePeriod || '0'}</td>
+                    <td class="px-4 py-3">${circle.assignedMembersCount || '0'}</td>
+                `;
+                circlesTableBody.appendChild(newRow);
+            });
+            saveCirclesToLocalStorage(); // Save changes after rendering
+        }
+
+
+        // --- Add New Circle Logic ---
         addCircleButton.addEventListener('click', () => {
             isEditingMode = false;
             circlePopupTitle.textContent = 'Add New Circle';
             submitCircleButton.textContent = 'SUBMIT';
+            closeCirclePopup(); // Ensure form is reset
             openCirclePopup();
         });
 
-        function createNewCircleRow(monthlyInvestment, participantsMonths, fee, startingDate, endingDate, reservePeriod) {
-            const currentRows = circlesTableBody.getElementsByTagName('tr').length;
-            const newCircleId = currentRows + 1;
-
-            const newRow = document.createElement('tr');
-            newRow.classList.add('border-b', 'hover:bg-gray-50');
-
-            newRow.innerHTML = `
-                <td class="px-4 py-3 flex space-x-2">
-                    <button class="edit-btn" title="Edit">✏️</button>
-                    <button class="copy-btn" title="Copy">📋</button>
-                </td>
-                <td class="px-4 py-3">${newCircleId}</td>
-                <td class="px-4 py-3">
-                    <span class="text-green-700 bg-green-100 px-2 py-1 rounded-full text-xs font-medium">active</span>
-                </td>
-                <td class="px-4 py-3">£${monthlyInvestment}</td>
-                <td class="px-4 py-3">${participantsMonths}</td>
-                <td class="px-4 py-3">£${fee}</td>
-                <td class="px-4 py-3">${startingDate}</td>
-                <td class="px-4 py-3">${endingDate || 'N/A'}</td>
-                <td class="px-4 py-3">${reservePeriod || '0'}</td>
-            `;
-            circlesTableBody.appendChild(newRow);
-            alert('New Circle Added!');
-        }
-
-
-        // --- Edit Circle specific logic ---
-        function openEditCirclePopup(row) {
+        // --- Edit Circle Specific Logic ---
+        function openEditCirclePopup(circleId) {
             isEditingMode = true;
-            currentRowBeingEdited = row;
-            circlePopupTitle.textContent = 'Edit Circle';
-            submitCircleButton.textContent = 'SAVE CHANGES';
+            currentCircleBeingEdited = circlesData.find(c => c.id === circleId);
 
-            const cells = row.querySelectorAll('td');
-            // Populate form fields with current row data
-            // Note: circleName is not stored in the table, so it won't be pre-filled
-            monthlyInvestmentInput.value = cells[3].textContent.replace('£', '');
-            participantsMonthsInput.value = cells[4].textContent;
-            feeInput.value = cells[5].textContent.replace('£', '');
-            startingDateInput.value = cells[6].textContent;
-            endingDateInput.value = cells[7].textContent === 'N/A' ? '' : cells[7].textContent;
-            reservePeriodInput.value = cells[8].textContent; // Now correctly mapping to the 9th column
-
-            openCirclePopup(); // Open the popup with pre-filled data
-        }
-
-        function updateExistingCircle() {
-            if (!currentRowBeingEdited) return;
-
-            const monthlyInvestment = monthlyInvestmentInput.value.trim();
-            const participantsMonths = participantsMonthsInput.value.trim();
-            const fee = feeInput.value.trim();
-            const startingDate = startingDateInput.value.trim();
-            const endingDate = endingDateInput.value.trim();
-            const reservePeriod = reservePeriodInput.value.trim(); 
-
-            // Basic validation
-            if (!monthlyInvestment || !participantsMonths || !fee || !startingDate || !reservePeriod) {
-                alert('Please fill in all required fields (marked with *).');
+            if (!currentCircleBeingEdited) {
+                alert('Error: Circle not found for editing.');
                 return;
             }
 
-            const cells = currentRowBeingEdited.querySelectorAll('td');
-            // Update the cells in the current row
-            cells[3].textContent = `£${monthlyInvestment}`;
-            cells[4].textContent = participantsMonths;
-            cells[5].textContent = `£${fee}`;
-            cells[6].textContent = startingDate;
-            cells[7].textContent = endingDate || 'N/A';
-            cells[8].textContent = reservePeriod; 
+            circlePopupTitle.textContent = `Edit Circle #${currentCircleBeingEdited.id}`;
+            submitCircleButton.textContent = 'SAVE CHANGES';
 
+            // Populate form fields from the circle object
+            circleNameInput.value = currentCircleBeingEdited.circleName || '';
+            monthlyInvestmentInput.value = currentCircleBeingEdited.monthlyInvestment;
+            participantsMonthsInput.value = currentCircleBeingEdited.participantsMonths;
+            feeInput.value = currentCircleBeingEdited.fee;
+            startingDateInput.value = currentCircleBeingEdited.startingDate;
+            endingDateInput.value = currentCircleBeingEdited.endingDate || '';
+            reservePeriodInput.value = currentCircleBeingEdited.reservePeriod;
+            assignedMembersInput.value = currentCircleBeingEdited.assignedMembersCount;
+
+            // Render sponsored users section
+            renderSponsoredUsersInPopup(currentCircleBeingEdited); // Pass the circle object
+            populateAvailableSponsoredUsers(currentCircleBeingEdited);
+
+            openCirclePopup();
+        }
+
+        // --- Update Existing Circle Logic ---
+        function updateExistingCircle() {
+            if (!currentCircleBeingEdited) return;
+
+            // Get updated values from form
+            const oldCircleName = currentCircleBeingEdited.circleName;
+            const oldMonthlyInvestment = currentCircleBeingEdited.monthlyInvestment;
+            const oldParticipantsMonths = currentCircleBeingEdited.participantsMonths;
+            const oldFee = currentCircleBeingEdited.fee;
+            const oldStartingDate = currentCircleBeingEdited.startingDate;
+            const oldEndingDate = currentCircleBeingEdited.endingDate;
+            const oldReservePeriod = currentCircleBeingEdited.reservePeriod;
+            const oldAssignedMembersCount = currentCircleBeingEdited.assignedMembersCount;
+
+            currentCircleBeingEdited.circleName = circleNameInput.value.trim();
+            currentCircleBeingEdited.monthlyInvestment = parseFloat(monthlyInvestmentInput.value.trim()) || 0;
+            currentCircleBeingEdited.participantsMonths = parseFloat(participantsMonthsInput.value.trim()) || 0;
+            currentCircleBeingEdited.fee = parseFloat(feeInput.value.trim()) || 0;
+            currentCircleBeingEdited.startingDate = startingDateInput.value.trim();
+            currentCircleBeingEdited.endingDate = endingDateInput.value.trim() || null;
+            currentCircleBeingEdited.reservePeriod = parseFloat(reservePeriodInput.value.trim()) || 0;
+            currentCircleBeingEdited.assignedMembersCount = parseInt(assignedMembersInput.value.trim()) || 0;
+            // Status is currently fixed as 'active', but could be made editable
+            // currentCircleBeingEdited.status = 'active'; 
+
+            renderCirclesTable(); // Re-render table to show updated data
             alert('Circle updated successfully!');
+
+            // Log the update
+            let changes = [];
+            if (oldCircleName !== currentCircleBeingEdited.circleName) changes.push(`Name: '${oldCircleName}' -> '${currentCircleBeingEdited.circleName}'`);
+            if (oldMonthlyInvestment !== currentCircleBeingEdited.monthlyInvestment) changes.push(`Monthly Inv: £${oldMonthlyInvestment} -> £${currentCircleBeingEdited.monthlyInvestment}`);
+            if (oldParticipantsMonths !== currentCircleBeingEdited.participantsMonths) changes.push(`Period: ${oldParticipantsMonths} -> ${currentCircleBeingEdited.participantsMonths}`);
+            if (oldFee !== currentCircleBeingEdited.fee) changes.push(`Fee: £${oldFee} -> £${currentCircleBeingEdited.fee}`);
+            if (oldStartingDate !== currentCircleBeingEdited.startingDate) changes.push(`Start Date: ${oldStartingDate} -> ${currentCircleBeingEdited.startingDate}`);
+            if (oldEndingDate !== currentCircleBeingEdited.endingDate) changes.push(`End Date: ${oldEndingDate || 'N/A'} -> ${currentCircleBeingEdited.endingDate || 'N/A'}`);
+            if (oldReservePeriod !== currentCircleBeingEdited.reservePeriod) changes.push(`Reserve Period: ${oldReservePeriod} -> ${currentCircleBeingEdited.reservePeriod}`);
+            if (oldAssignedMembersCount !== currentCircleBeingEdited.assignedMembersCount) changes.push(`Assigned Members: ${oldAssignedMembersCount} -> ${currentCircleBeingEdited.assignedMembersCount}`);
+            
+            if (changes.length > 0) {
+                addLogEntry("Circle Updated", `Circle #${currentCircleBeingEdited.id} was updated. Changes: ${changes.join(', ')}.`, { circleId: currentCircleBeingEdited.id, circleName: currentCircleBeingEdited.circleName, updatedFields: changes });
+            } else {
+                 addLogEntry("Circle Updated", `Circle #${currentCircleBeingEdited.id} was updated (no field changes).`, { circleId: currentCircleBeingEdited.id, circleName: currentCircleBeingEdited.circleName });
+            }
         }
 
         // --- Handle Submission (Add or Edit) ---
         submitCircleButton.addEventListener('click', () => {
+            const monthlyInvestment = parseFloat(monthlyInvestmentInput.value.trim());
+            const participantsMonths = parseFloat(participantsMonthsInput.value.trim());
+            const fee = parseFloat(feeInput.value.trim());
+            const startingDate = startingDateInput.value.trim();
+            const endingDate = endingDateInput.value.trim();
+            const reservePeriod = parseFloat(reservePeriodInput.value.trim()); 
+            const assignedMembers = parseInt(assignedMembersInput.value.trim());
+
+            // Basic validation
+            if (isNaN(monthlyInvestment) || isNaN(participantsMonths) || isNaN(fee) || !startingDate || isNaN(reservePeriod) || isNaN(assignedMembers)) {
+                alert('Please fill in all required fields with valid numbers/dates.');
+                return;
+            }
+
             if (isEditingMode) {
                 updateExistingCircle();
             } else {
-                const monthlyInvestment = monthlyInvestmentInput.value.trim();
-                const participantsMonths = participantsMonthsInput.value.trim();
-                const fee = feeInput.value.trim();
-                const startingDate = startingDateInput.value.trim();
-                const endingDate = endingDateInput.value.trim();
-                const reservePeriod = reservePeriodInput.value.trim(); 
-                createNewCircleRow(monthlyInvestment, participantsMonths, fee, startingDate, endingDate, reservePeriod); 
+                const newCircle = {
+                    id: nextCircleId++,
+                    circleName: circleNameInput.value.trim(),
+                    monthlyInvestment: monthlyInvestment,
+                    participantsMonths: participantsMonths,
+                    fee: fee,
+                    startingDate: startingDate,
+                    endingDate: endingDate || null,
+                    reservePeriod: reservePeriod,
+                    assignedMembersCount: assignedMembers,
+                    status: 'active', // Default status for new circles
+                    sponsoredUsers: [] // Initialize empty sponsoredUsers array for new circles
+                };
+                circlesData.push(newCircle);
+                renderCirclesTable();
+                alert('New Circle Added!');
+                addLogEntry("Circle Created", `New Circle #${newCircle.id} ('${newCircle.circleName || "Unnamed Circle"}') was created.`, { circleId: newCircle.id, circleName: newCircle.circleName });
             }
             closeCirclePopup(); // Close after submission
         });
@@ -797,60 +1189,317 @@
             const monthlyInvestment = parseFloat(monthlyInvestmentInput.value) || 0;
             const participantsMonths = parseFloat(participantsMonthsInput.value) || 0;
             const totalAmount = monthlyInvestment * participantsMonths;
-            calculatedAmountSpan.textContent = `£${monthlyInvestment} x ${participantsMonths} = £${totalAmount}`;
+            calculatedAmountSpan.textContent = `£${monthlyInvestment.toFixed(2)} x ${participantsMonths} = £${totalAmount.toFixed(2)}`;
+        }
+
+        // --- Process Financials for a Sponsored User Completion ---
+        function processCompletionFinancials(circleId, userId, isInitialLoad = false) {
+            const circle = circlesData.find(c => c.id === circleId);
+            if (!circle) return;
+
+            const sponsoredUser = circle.sponsoredUsers.find(su => su.userId === userId);
+            if (!sponsoredUser) return;
+
+            // 1. Calculate Initial Gift for this single completion
+            const giftPerCompletion = circle.monthlyInvestment - circle.fee;
+
+            // 2. Calculate Donation Challenge Contribution (deducted automatically)
+            // Example: 10% of monthly investment per completion
+            const donationDeductionPerCompletion = circle.monthlyInvestment * DONATION_PERCENTAGE_OF_MONTHLY_INVESTMENT;
+
+            // 3. Calculate Net Gifted Amount (after deduction)
+            const netGiftPerCompletion = giftPerCompletion - donationDeductionPerCompletion;
+
+            // 4. Split into categories
+            const lockedSavingsPerCompletion = netGiftPerCompletion * LOCKED_SAVINGS_PERCENTAGE;
+            const currentAccountPerCompletion = netGiftPerCompletion - lockedSavingsPerCompletion;
+
+            // Update cumulative totals for the sponsored user
+            sponsoredUser.totalGiftedAmount = (sponsoredUser.totalGiftedAmount || 0) + giftPerCompletion;
+            sponsoredUser.totalDonationDeducted = (sponsoredUser.totalDonationDeducted || 0) + donationDeductionPerCompletion;
+            sponsoredUser.totalLockedSavings = (sponsoredUser.totalLockedSavings || 0) + lockedSavingsPerCompletion;
+            sponsoredUser.totalCurrentAccount = (sponsoredUser.totalCurrentAccount || 0) + currentAccountPerCompletion;
+
+            // Add transaction to history
+            const transactionRecord = {
+                date: new Date().toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' }),
+                time: new Date().toLocaleTimeString('en-GB'),
+                circleId: circle.id,
+                completionNumber: sponsoredUser.completions, // This completion
+                initialGift: giftPerCompletion.toFixed(2),
+                donationDeduction: donationDeductionPerCompletion.toFixed(2),
+                netGift: netGiftPerCompletion.toFixed(2),
+                lockedSavings: lockedSavingsPerCompletion.toFixed(2),
+                currentAccount: currentAccountPerCompletion.toFixed(2)
+            };
+            // Ensure transactionHistory array exists
+            if (!sponsoredUser.transactionHistory) {
+                sponsoredUser.transactionHistory = [];
+            }
+            sponsoredUser.transactionHistory.push(transactionRecord);
+
+            if (!isInitialLoad) { // Only save to local storage and re-render if not initial load
+                saveCirclesToLocalStorage();
+                renderSponsoredUsersInPopup(circle); // Re-render to show updated display
+            }
         }
 
 
-        // --- Event Delegation for Edit and Copy Buttons ---
-        circlesTableBody.addEventListener('click', function(event) {
-            const target = event.target;
+        // --- Sponsored User Management Logic ---
 
-            if (target.classList.contains('copy-btn')) {
-                const rowToCopy = target.closest('tr');
-                if (rowToCopy) {
-                    const cells = rowToCopy.querySelectorAll('td');
-                    // Extract data from the cells (skip first 'Actions' column)
-                    const monthly = cells[3].textContent.replace('£', '');
-                    const period = cells[4].textContent;
-                    const fee = cells[5].textContent.replace('£', '');
-                    const startDate = cells[6].textContent;
-                    const endDate = cells[7].textContent;
-                    const reserve = cells[8].textContent; 
-                    
-                    createNewCircleRow(monthly, period, fee, startDate, endDate, reserve); 
-                    alert('Circle duplicated!');
+        // Helper to find a sponsored user by ID in MOCK_USERS_DATA
+        function getSponsoredUserFromMock(userId) {
+            return MOCK_USERS_DATA.find(u => u.id === userId && u.role === 'Sponsored User');
+        }
+
+        // Renders the list of sponsored users in the popup
+        function renderSponsoredUsersInPopup(circle) {
+            sponsoredUsersList.innerHTML = '';
+            if (!circle.sponsoredUsers || circle.sponsoredUsers.length === 0) {
+                sponsoredUsersList.innerHTML = '<p class="text-gray-500 text-sm">No sponsored users assigned yet.</p>';
+                return;
+            }
+
+            circle.sponsoredUsers.forEach(sponsoredUser => {
+                const listItem = document.createElement('div');
+                listItem.classList.add('sponsored-user-item');
+                // Determine if requirements are met for styling
+                const completedAll = (sponsoredUser.completions >= 5 && sponsoredUser.invitesCompleted >= sponsoredUser.requiredInvites);
+                if(completedAll) {
+                    listItem.classList.add('bg-green-50'); // Light green background if completed
                 }
-            } else if (target.classList.contains('edit-btn')) {
-                const rowToEdit = target.closest('tr');
-                if (rowToEdit) {
-                    openEditCirclePopup(rowToEdit);
+                
+                listItem.innerHTML = `
+                    <span class="main-info">
+                        <span class="progress-info">
+                            <strong>${sponsoredUser.name}</strong> (ID: ${sponsoredUser.userId}) <br>
+                            Completions: ${sponsoredUser.completions}/5 | Invites: ${sponsoredUser.invitesCompleted}/${sponsoredUser.requiredInvites} <br>
+                            Total Gifted: £${(sponsoredUser.totalGiftedAmount || 0).toFixed(2)} <br>
+                            Donation Deducted: £${(sponsoredUser.totalDonationDeducted || 0).toFixed(2)} <br>
+                            Net Gifted (after deduction): £${((sponsoredUser.totalGiftedAmount || 0) - (sponsoredUser.totalDonationDeducted || 0)).toFixed(2)} <br>
+                            Locked Savings: £${(sponsoredUser.totalLockedSavings || 0).toFixed(2)} (Locked for 3 months) <br>
+                            Current Account Deposit: £${(sponsoredUser.totalCurrentAccount || 0).toFixed(2)}
+                        </span>
+                        <div class="progress-buttons">
+                            <button class="btn-complete" onclick="addCompletion(${circle.id}, '${sponsoredUser.userId}')">Add Completion</button>
+                            <button class="btn-invite" onclick="addInvite(${circle.id}, '${sponsoredUser.userId}')">Add Invite</button>
+                        </div>
+                    </span>
+                    <button class="btn-history-toggle" onclick="toggleHistory(this)">Show History</button>
+                    <div class="history-section">
+                        <h5>Account History for ${sponsoredUser.name}:</h5>
+                        <ul class="history-list">
+                            ${(sponsoredUser.transactionHistory || []).map(tx => `
+                                <li>
+                                    [${tx.date} ${tx.time}] Comp #${tx.completionNumber}:<br>
+                                    Gift: £${tx.initialGift} | Ded: £${tx.donationDeduction} | Net: £${tx.netGift} <br>
+                                    Locked: £${tx.lockedSavings} | Current: £${tx.currentAccount}
+                                </li>
+                            `).join('')}
+                            ${(sponsoredUser.transactionHistory || []).length === 0 ? '<li>No transactions yet.</li>' : ''}
+                        </ul>
+                    </div>
+                `;
+                sponsoredUsersList.appendChild(listItem);
+            });
+        }
+
+        // Toggles the visibility of the history section
+        function toggleHistory(button) {
+            const historySection = button.nextElementSibling; // Assuming history-section is the next sibling
+            if (historySection && historySection.classList.contains('history-section')) {
+                const isHidden = historySection.style.display === 'none' || historySection.style.display === '';
+                historySection.style.display = isHidden ? 'block' : 'none';
+                button.textContent = isHidden ? 'Hide History' : 'Show History';
+            }
+        }
+
+
+        // Populates the dropdown with available sponsored users not already in this circle
+        function populateAvailableSponsoredUsers(circle) {
+            availableSponsoredUsersSelect.innerHTML = '<option value="">Select Sponsored User to Add</option>';
+            const assignedSponsoredUserIds = circle.sponsoredUsers.map(su => su.userId);
+
+            MOCK_USERS_DATA.forEach(user => {
+                if (user.role === 'Sponsored User' && !assignedSponsoredUserIds.includes(user.id)) {
+                    const option = document.createElement('option');
+                    option.value = user.id;
+                    option.textContent = `${user.name} (ID: ${user.id})`;
+                    availableSponsoredUsersSelect.appendChild(option);
                 }
+            });
+        }
+
+        // Logic to add a sponsored user to the current circle being edited
+        addSponsoredUserToCircleBtn.addEventListener('click', () => {
+            const selectedUserId = availableSponsoredUsersSelect.value;
+            if (!selectedUserId || !currentCircleBeingEdited) {
+                alert('Please select a sponsored user and ensure a circle is being edited.');
+                return;
+            }
+
+            const userToAdd = getSponsoredUserFromMock(selectedUserId);
+            if (userToAdd) {
+                // Check if already added (though select should prevent this)
+                const alreadyAssigned = currentCircleBeingEdited.sponsoredUsers.some(su => su.userId === selectedUserId);
+                if (alreadyAssigned) {
+                    alert('This sponsored user is already assigned to this circle.');
+                    return;
+                }
+
+                currentCircleBeingEdited.sponsoredUsers.push({
+                    userId: userToAdd.id,
+                    name: userToAdd.name,
+                    completions: 0,
+                    invitesCompleted: 0,
+                    requiredInvites: 2, // Default requirement
+                    notifiedCompletions: false, 
+                    notifiedInvites: false,
+                    totalGiftedAmount: 0, // Initialize new financial totals
+                    totalDonationDeducted: 0,
+                    totalLockedSavings: 0,
+                    totalCurrentAccount: 0,
+                    transactionHistory: [] // Initialize history for new user
+                });
+                renderSponsoredUsersInPopup(currentCircleBeingEdited); // Re-render the list
+                populateAvailableSponsoredUsers(currentCircleBeingEdited); // Update select
+                saveCirclesToLocalStorage(); // Save changes
+                alert(`${userToAdd.name} added as sponsored user to this circle.`);
+                addLogEntry("Sponsored User Assigned", `Sponsored User ${userToAdd.name} (ID: ${userToAdd.id}) assigned to Circle #${currentCircleBeingEdited.id}.`, { userId: userToAdd.id, circleId: currentCircleBeingEdited.id });
             }
         });
 
+
+        // Increments completion count for a sponsored user in a circle
+        function addCompletion(circleId, userId) {
+            const circle = circlesData.find(c => c.id === circleId);
+            if (!circle) return;
+
+            const sponsoredUser = circle.sponsoredUsers.find(su => su.userId === userId);
+            if (sponsoredUser) {
+                sponsoredUser.completions++;
+                // Process financials and update history
+                processCompletionFinancials(circle.id, sponsoredUser.userId); 
+                checkSponsoredUserProgress(circleId, userId); // Check for notifications
+                // saveCirclesToLocalStorage(); // Already saved by processCompletionFinancials
+                addLogEntry("Sponsored User Completion", `Sponsored User ${sponsoredUser.name} (ID: ${sponsoredUser.userId}) completed a turn in Circle #${circle.id}.`, { userId: sponsoredUser.userId, circleId: circle.id, newCompletions: sponsoredUser.completions });
+            }
+        }
+
+        // Increments invite count for a sponsored user in a circle
+        function addInvite(circleId, userId) {
+            const circle = circlesData.find(c => c.id === circleId);
+            if (!circle) return;
+
+            const sponsoredUser = circle.sponsoredUsers.find(su => su.userId === userId);
+            if (sponsoredUser) {
+                sponsoredUser.invitesCompleted++;
+                renderSponsoredUsersInPopup(circle); // Re-render to show update (no financial changes for invites)
+                checkSponsoredUserProgress(circleId, userId); // Check for notifications
+                saveCirclesToLocalStorage(); // Save changes
+                addLogEntry("Sponsored User Invite", `Sponsored User ${sponsoredUser.name} (ID: ${sponsoredUser.userId}) logged an invite for Circle #${circle.id}.`, { userId: sponsoredUser.userId, circleId: circle.id, newInvites: sponsoredUser.invitesCompleted });
+            }
+        }
+
+        // Checks if a sponsored user has met their requirements and notifies them
+        function checkSponsoredUserProgress(circleId, userId) {
+            const circle = circlesData.find(c => c.id === circleId);
+            const sponsoredUser = circle ? circle.sponsoredUsers.find(su => su.userId === userId) : null;
+
+            if (sponsoredUser) {
+                const completionsMet = sponsoredUser.completions >= 5;
+                const invitesMet = sponsoredUser.invitesCompleted >= sponsoredUser.requiredInvites;
+
+                if (completionsMet && !sponsoredUser.notifiedCompletions) {
+                    alert(`${sponsoredUser.name} has completed 5 circles in Circle #${circle.id}!`);
+                    sponsoredUser.notifiedCompletions = true; // Mark as notified
+                }
+                if (invitesMet && !sponsoredUser.notifiedInvites) {
+                    alert(`${sponsoredUser.name} has invited ${sponsoredUser.requiredInvites} people for Circle #${circle.id}!`);
+                    sponsoredUser.notifiedInvites = true; // Mark as notified
+                }
+                if (completionsMet && invitesMet && !sponsoredUser.notifiedOverall) { // Optional: overall notification
+                    alert(`🎉 Congratulations! ${sponsoredUser.name} has completed all requirements for Circle #${circle.id}!`);
+                    sponsoredUser.notifiedOverall = true;
+                }
+            }
+            saveCirclesToLocalStorage(); // Save notification status
+        }
+
+
+        // --- Event Delegation for Edit, Copy Buttons in Table ---
+        circlesTableBody.addEventListener('click', function(event) {
+            const target = event.target;
+            const circleId = parseInt(target.dataset.circleId); // Get circle ID from data attribute
+
+            if (target.classList.contains('copy-btn')) {
+                const originalCircle = circlesData.find(c => c.id === circleId);
+                if (originalCircle) {
+                    const newCircle = { ...originalCircle }; // Shallow copy
+                    newCircle.id = nextCircleId++; // Assign new ID
+                    newCircle.circleName = `${originalCircle.circleName || "Unnamed Circle"} (Copy)`; // Adjust name
+                    // Deep copy sponsoredUsers to avoid reference issues, and reset progress for copy
+                    newCircle.sponsoredUsers = originalCircle.sponsoredUsers ? 
+                        originalCircle.sponsoredUsers.map(su => ({ 
+                            userId: su.userId, 
+                            name: su.name, 
+                            completions: 0, // Reset for copied circle
+                            invitesCompleted: 0, // Reset for copied circle
+                            requiredInvites: su.requiredInvites,
+                            notifiedCompletions: false,
+                            notifiedInvites: false,
+                            totalGiftedAmount: 0,
+                            totalDonationDeducted: 0,
+                            totalLockedSavings: 0,
+                            totalCurrentAccount: 0,
+                            transactionHistory: []
+                        })) : [];
+                    
+                    circlesData.push(newCircle);
+                    renderCirclesTable();
+                    alert('Circle duplicated!');
+                    addLogEntry("Circle Duplicated", `Circle #${originalCircle.id} ('${originalCircle.circleName || "Unnamed Circle"}') was duplicated to new Circle #${newCircle.id}.`, { originalCircleId: originalCircle.id, newCircleId: newCircle.id });
+                }
+            } else if (target.classList.contains('edit-btn')) { // Only 'edit-btn' now
+                isEditingMode = true;
+                openEditCirclePopup(circleId);
+            }
+        });
+
+
         // --- Other existing functionalities ---
 
-        // Notification Bell functionality (UPDATED SELECTOR)
+        // Notification Bell functionality
         const notificationBellAnchor = document.getElementById('notificationBellAnchor');
         const notificationCount = document.getElementById('notificationCount');
-        const messageCount = document.getElementById('messageCount'); // Get the message count element
+        const messageCount = document.getElementById('messageCount');
 
-        // Function to generate a random number for testing
         function getRandomInt(min, max) {
             min = Math.ceil(min);
             max = Math.floor(max);
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
 
-        // Set random counts on page load for testing
         document.addEventListener('DOMContentLoaded', () => {
+            loadCirclesFromLocalStorage(); // Load circles data
+            loadTransactionLogFromLocalStorage(); // Load log data (from shared key)
+            initializeNextCircleId(); // Initialize ID counter
+            renderCirclesTable(); // Initial rendering of the table
+
+            // Optional: Add initial log for circles.html if it's the first page loaded
+            // (Only if transactionLog is empty, to avoid duplicates if users.html runs first)
+            if (transactionLog.length === 0) { 
+                addLogEntry("System Init", "Circles application initialized and created initial sample data.", { currentPage: 'circles.html' });
+                saveTransactionLogToLocalStorage();
+            }
+
             if (messageCount) {
-                const randomMessages = getRandomInt(1, 9); // Between 1 and 9
+                const randomMessages = getRandomInt(1, 9);
                 messageCount.textContent = randomMessages;
                 messageCount.style.display = randomMessages > 0 ? 'flex' : 'none'; 
             }
             if (notificationCount) {
-                const randomNotifications = getRandomInt(0, 9); // Between 0 and 9
+                const randomNotifications = getRandomInt(0, 9);
                 notificationCount.textContent = randomNotifications;
                 notificationCount.style.display = randomNotifications > 0 ? 'flex' : 'none'; 
             }
@@ -864,7 +1513,7 @@
             alert(`You have ${count} new notifications!`);
         });
 
-        // Profile Dropdown toggle (UPDATED SELECTOR)
+        // Profile Dropdown toggle
         const profileButton = document.getElementById('profileButton');
         const profileDropdown = document.getElementById('profileDropdown');
 
@@ -875,15 +1524,15 @@
             profileDropdown.style.display = expanded ? 'none' : 'block';
         });
 
-        // Close dropdown if clicking outside (KEPT CONSISTENT)
+        // Close dropdown if clicking outside
         document.addEventListener('click', (event) => {
             if (profileDropdown && profileButton && !profileButton.contains(event.target) && !profileDropdown.contains(event.target)) {
                 profileDropdown.style.display = 'none';
                 profileButton.setAttribute('aria-expanded', 'false');
             }
         });
-
-        // Inbox Icon functionality (UPDATED SELECTOR)
+        
+        // Inbox Icon functionality
         const inboxIconContainer = document.getElementById('inboxIconContainer');
         inboxIconContainer.addEventListener('click', (e) => {
             // e.preventDefault(); 
@@ -893,10 +1542,10 @@
 
         // Search functionality
         const searchInput = document.getElementById("searchInput");
-        const tableRows = circlesTableBody.getElementsByTagName("tr");
 
         searchInput.addEventListener("keyup", function () {
             const query = this.value.toLowerCase();
+            const tableRows = circlesTableBody.getElementsByTagName("tr");
             for (let i = 0; i < tableRows.length; i++) {
                 const rowText = tableRows[i].innerText.toLowerCase();
                 tableRows[i].style.display = rowText.includes(query) ? "" : "none";
